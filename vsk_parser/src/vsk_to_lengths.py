@@ -1,15 +1,24 @@
 import sys
 import xml.etree.ElementTree as ET
 
-from vsk_parser.src.character import Joint, Transform, Skeleton
+from vsk_parser.src.character import Joint, JointHinge, Transform, Skeleton
 from vsk_parser.src.skeleton_drawer import render_skeleton
 
 
 def extract_joint(element, current_id, parent_id):
     import numpy as np
-    joint = Joint(current_id, parent_id)
+
     transform = Transform()
-    joint_el = element[0]
+
+    if element.find("JointHinge") is not None:
+        joint_el = element.find("JointHinge")
+        joint = JointHinge(current_id, parent_id)
+        axis = joint_el.get("AXIS").strip().split()
+        axis = np.array(map(float, axis))
+        joint.store_params(*axis)
+    else:
+        joint_el = element[0]
+        joint = Joint(current_id, parent_id)
 
     translation = joint_el.get("PRE-POSITION").strip().split()
     translation = np.array(map(float, translation))
@@ -49,23 +58,6 @@ def parse_skeleton(skeleton_root_el):
     return joints, name2joint_id
 
 
-def print_skeleton_lengths(skeleton_root_el):
-    count = 0
-    for segment in skeleton_root_el.iter("Segment"):
-        joint = segment[0]
-        count += 1
-        print count, joint.get("NAME"), joint.get("PRE-POSITION")
-
-def display_all_joint(joints, name2joint_id):
-    for joint_id in xrange(len(joints)):
-        joint = joints[joint_id]
-        path = [joint.name]
-        while not joint.is_root():
-            joint = joints[joint.parent_id]
-            path.append(joint.name)
-
-        print " -> ".join(path)
-
 def main(xml_name):
     tree = ET.parse(xml_name)
     root = tree.getroot()
@@ -73,8 +65,13 @@ def main(xml_name):
     skeleton_root_el = skeleton_el.find("Segment")
     joints, name2joint_id = parse_skeleton(skeleton_root_el)
 
+    leg = joints[name2joint_id["LeftUpLeg_LeftLeg"]]
+    leg.move(45)
+
     skeleton = Skeleton(joints)
-    render_skeleton(skeleton)
+    render_skeleton(skeleton, display_names=False)
+
+
 
     # for name, joint_id in name2joint_id.items():
     #   print name
