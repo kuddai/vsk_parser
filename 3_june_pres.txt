@@ -1,0 +1,340 @@
+% Copyright 2004 by Till Tantau <tantau@users.sourceforge.net>.
+%
+% In principle, this file can be redistributed and/or modified under
+% the terms of the GNU Public License, version 2.
+%
+% However, this file is supposed to be a template to be modified
+% for your own needs. For this reason, if you use this file as a
+% template and not specifically distribute it as part of a another
+% package/program, I grant the extra permission to freely copy and
+% modify this file as you see fit and even to delete this copyright
+% notice. 
+
+\documentclass{beamer}
+
+% There are many different themes available for Beamer. A comprehensive
+% list with examples is given here:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+% You can uncomment the themes below if you would like to use a different
+% one:
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{boxes}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{default}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+\usepackage{wrapfig}
+
+\title{Overview of Batch Normalization}
+
+% A subtitle is optional and this may be deleted
+\subtitle{Acceleration of Deep Network Training}
+
+\author{Ruslan Burakov}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date{2016}
+% - Either use conference name or its abbreviation.
+% - Not really informative to the audience, more for people (including
+%   yourself) who are reading the slides online
+
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
+
+% If you have a file called "university-logo-filename.xxx", where xxx
+% is a graphic format that can be processed by latex or pdflatex,
+% resp., then you can add a logo as follows:
+
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+% Let's get started
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+% Section and subsections will appear in the presentation overview
+% and table of contents.
+\section{First Main Section}
+
+\begin{frame}{Main Articles}
+    
+  \begin{itemize}
+  \item {
+    %The main paper of Today presentation and original paper about Batch Normalisation. Emphasises all the benefits of Batch Normalisation
+    "Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift". Sergey Ioffe, Christian Szegedy. Google Inc. 2015
+  }
+  \item {
+    %More recent paper in october. In our group some of us deals with recurrent neural networks. Very brief summary of this paper -> Batch normalisation is not useful for RNN.
+    "Batch Normalized Recurrent Neural Networks". Yoshua Bengio, Cesar Laurent, Gabriel Pereyra, Philemon Brakel, Ying Zhang. 2015
+  }
+  \end{itemize}
+\end{frame}
+
+% You can reveal the parts of a slide one at a time
+% with the \pause command:
+\begin{frame}{NN Slow Training}{Source of Problem}
+  \begin{itemize}
+  \item {
+    Distribution of each layer's inputs changes, because parameters of the previous layers are not static during the training. This is known as \textit{Internal Covariate Shift} 
+    \pause % The slide will pause after showing the first item
+  }
+  \item {   
+    l - loss function, F - transformation
+    \begin{align*}
+        %%idea similar to encoder where each layer  can be considered as NN which takes input from previous NN. But here is the problem. In contrast to original data input the distribution doesn't remain iid which affects learning speed badly. 
+        l &= F_2(F_1(u,\Theta_1), \Theta_2) \\
+        x &= F_1(u,\Theta_1) \\
+        l &= F_2(x, \Theta_2) \\
+        \Theta_2  &\leftarrow \Theta_2 - \frac{\alpha}{m} \sum^{m}_{i=1}  \frac{\partial F_2(x_i, \Theta_2)}{\partial \Theta_2}
+    \end{align*}
+    \pause
+  }
+  \item {
+    Change of $\Theta_1$ leads to change of distribution x, and affects $\Theta_2$
+  }
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Internal Covariate Shift}{why is it bad?}
+  \begin{itemize}
+      \item {
+          Layer's parameters have to constantly adjust to changes of below layers 
+      }
+      \item {
+        It especially slows down models with saturating nonlinearities.
+        \pause
+      }
+      \item {
+        \begin{align*}
+            z &= g(W u + b) \\
+            x &= g W + b \\
+            g(x) &= \frac{1}{1 + exp(-x)} \\
+            |x| \uparrow \ \  &\rightarrow \ \  g'(x) \downarrow
+        \end{align*}
+      }
+      \item {
+        %well we restore unite transform so it seams to be a trick as gamma and beta can be high as well and we will have a saturation problem once again. In article they avoid this topic
+        Statistically most dimensions of x usually have high values which means small gradients for u. Therefore, slow learning for deep networks.
+      }
+      
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}{Sigmoid}
+  \includegraphics[width=0.8\textwidth]{Logistic-curve.png}
+\end{frame}
+
+\begin{frame}{Solutions}
+    \begin{itemize}
+        \item {
+            In order to cope with gradient saturation people usually use ReLU activation function, careful initialisation of parameters, small learning rates, etc.
+            \pause
+        }
+        \item {
+            Alternatively \textit{Batch Normalisation} can be utilised. We insert additional layers that fixes means and variances of layer inputs. \\
+            Benefits:
+            
+            \begin{itemize}
+                \item  {
+                    %which leads to higher learning speed in terms of epoches
+                    %but you have to be cautious with that as additional layers means additional computational cost per layer. So I have seen on forums people recommend to use them not for every layer
+                    Much higher learning rates without risk of divergence (by reducing the dependence of gradients on the scale of the parameters or their initial values)
+                }
+                \pause
+                \item {
+                    %so less amount of droupout is needed for example
+                    Batch Normalisation partially acts as regularisation in the system
+                }
+                \pause
+                \item {
+                    Easier to use activation functions with saturating nonlinearities (sigmoid, tanh, etc.) 
+                }
+                
+            \end{itemize}
+            
+        }
+    \end{itemize}
+  
+\end{frame}
+
+\begin{frame}{Batch Normalisation}
+    \begin{itemize}
+        
+        \item { 
+        %%Lecun 1998
+        Old idea. The network training converges faster if its inputs are \textit{whitened} – i.e., linearly transformed to have zero means and unit variances, and decorrelated. 
+        }
+        \item {
+        %%if idea is so great why did nobody use it before? Story similar to the origin of NN, nobody was interested in them until backpropagation was proposed. Here the original whitening was done without taking into account chagnes in the gradient step.
+        By whitening inputs of each layer, we become closer to fixed distribution of inputs for each layer
+        }
+        
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Naive Batch Normalisation}{without modifying gradient step}
+    \begin{itemize}
+        \item { 
+            Consider \(\hat{x}=x-E[x]\) where \(x=u+b\) and \(E[x]=\frac{1}{N}\sum^N_i x_i \) 
+        }
+        \item {
+            If gradient doesn't account the fact that \(E[x]\) also depends on b then update is \(b \leftarrow b + \Delta b \) where \(\Delta b \propto - \partial l / \partial \hat{x}\) then
+            \begin{align*}
+                x &\leftarrow u + (b + \Delta b) - E[u + (b + \Delta b)] \\ &= u + b - E[u + b] = x - E[x] \\ \\
+                E[\Delta b] &= \Delta b
+            \end{align*}
+            In reality gradient and thus, \(\Delta b\) must depend on other training examples  \(\Delta b\ = \Delta b(x, X)\) and \(\Delta b\) won't leave expectation operator as just a constant. 
+        }
+        \item {
+            It is empirically observed that such configuration leads to growth of b and blows up the model. 
+        }
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Batch Normalisation}{modified gradient step}
+    \begin{itemize}
+        \item {
+            rewrite whole thing as \(\hat{x} = Norm(x, X)\) and get these gradients during backpropagation:
+            \begin{align*}
+                \frac{\partial Norm(x, X)}{\partial x} \text{ and } \frac{\partial Norm(x, X)}{\partial X}
+            \end{align*}
+        }
+        \item {
+            %similar to mahalanobis distance -> decorrelates input
+            True whitened activations must computed as:
+            \begin{align*}
+                Cov[x]^{-1/2}(x-E[x])
+            \end{align*}
+        }
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Batch Normalisation}{Practical}
+    \begin{itemize}
+        \item {
+            Computing covariance 
+        }
+        \item {
+            
+            True whitened activations must computed as:
+            \begin{align*}
+                Cov[x]^{-1/2}(x-E[x])
+            \end{align*}
+        }
+    \end{itemize}
+\end{frame}
+
+\section{Second Main Section}
+
+\subsection{Another Subsection}
+
+\begin{frame}{Blocks}
+\begin{block}{Block Title}
+You can also highlight sections of your presentation in a block, with it's own title
+\end{block}
+\begin{theorem}
+There are separate environments for theorems, examples, definitions and proofs.
+\end{theorem}
+\begin{example}
+Here is an example of an example block.
+\end{example}
+\end{frame}
+
+% Placing a * after \section means it will not show in the
+% outline or table of contents.
+\section*{Summary}
+
+\begin{frame}{Summary}
+  \begin{itemize}
+  \item
+    The \alert{first main message} of your talk in one or two lines.
+  \item
+    The \alert{second main message} of your talk in one or two lines.
+  \item
+    Perhaps a \alert{third message}, but not more than that.
+  \end{itemize}
+  
+  \begin{itemize}
+  \item
+    Outlook
+    \begin{itemize}
+    \item
+      Something you haven't solved.
+    \item
+      Something else you haven't solved.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+
+% All of the following is optional and typically not needed. 
+\appendix
+\section<presentation>*{\appendixname}
+\subsection<presentation>*{For Further Reading}
+
+\begin{frame}[allowframebreaks]
+  \frametitle<presentation>{For Further Reading}
+    
+  \begin{thebibliography}{10}
+    
+  \beamertemplatebookbibitems
+  % Start with overview books.
+
+  \bibitem{Author1990}
+    A.~Author.
+    \newblock {\em Handbook of Everything}.
+    \newblock Some Press, 1990.
+ 
+    
+  \beamertemplatearticlebibitems
+  % Followed by interesting articles. Keep the list short. 
+
+  \bibitem{Someone2000}
+    S.~Someone.
+    \newblock On this and that.
+    \newblock {\em Journal of This and That}, 2(1):50--100,
+    2000.
+  \end{thebibliography}
+\end{frame}
+
+\end{document}
+
+

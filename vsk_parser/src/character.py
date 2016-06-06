@@ -96,9 +96,9 @@ class Transform(object):
         return str(self.m4x4)
 
 
+
 class Joint(object):
     def __init__(self, current_id, parent_id):
-
         self.transform = Transform()
         self.current_id = current_id
         self.parent_id = parent_id
@@ -107,23 +107,85 @@ class Joint(object):
     def is_root(self):
         return self.current_id == 0
 
+    def store_params(self, *params):
+        pass
+
+    def move(self, *params):
+        pass
+
+class JointBall(Joint):
+
+    def move(self, *rot_euler):
+        """
+        :param rot_euler: euler angles in degrees
+        """
+        assert len(rot_euler) == 3
+        assert all(isinstance(arg, Real) for arg in rot_euler)
+
+        rx, ry, rz = rot_euler
+        rot = Transform.from_euler(rx, ry, rz)
+        self.transform.rotation = np.dot(rot, self.transform.rotation)
+
+class JointFree(JointBall):
+
+    def move(self, *rot_euler_pos):
+        """
+        :param rot_euler_pos: euler angles in degrees and positions
+        """
+        assert len(rot_euler_pos) == 6, len(rot_euler_pos)
+        assert all(isinstance(arg, Real) for arg in rot_euler_pos)
+
+        rx, ry, rz, x, y, z = rot_euler_pos
+        #do rotation
+        super(JointBall, self).move(rx, ry, rz)
+        #translation
+        trans = np.array([x, y, z])
+        self.transform.translation += trans
+
+
 class JointHinge(Joint):
 
-    def store_params(self, *args):
-        assert len(args) == 3
-        assert all(isinstance(arg, Real) for arg in args)
+    def store_params(self, *axis):
+        assert len(axis) == 3, len(axis)
+        assert all(isinstance(arg, Real) for arg in axis)
 
-        self.axis = np.array(args)
+        self.axis = np.array(axis)
 
-    def move(self, angle):
-        assert isinstance(angle, Real)
+    def move(self, *angle):
+        """
+        :param angle: angle in degrees
+        """
+        assert len(angle) == 1
+        assert all(isinstance(arg, Real) for arg in angle)
+        angle = angle[0]
 
-        # rot_trn = Transform()
-        # rot_trn.rotation = Transform.rotate_around(self.axis, angle)
         rot = Transform.rotate_around(self.axis, angle)
-        rot = np.dot(rot, self.transform.rotation)
+        self.transform.rotation = np.dot(rot, self.transform.rotation)
 
-        self.transform.rotation = rot
+class JointUniversal(Joint):
+
+    def store_params(self, *axis):
+        assert len(axis) == 6, len(axis)
+        assert all(isinstance(arg, Real) for arg in axis)
+
+        self.axis1 = np.array(axis[:3])
+        self.axis2 = np.array(axis[3:])
+
+    def move(self, *angles):
+        """
+        :param angles: angles in degrees
+        """
+        assert len(angles) == 2
+        assert all(isinstance(arg, Real) for arg in angles)
+        angle1, angle2 = angles
+
+        rot1 = Transform.rotate_around(self.axis1, angle1)
+        self.transform.rotation = np.dot(rot1, self.transform.rotation)
+
+        rot2 = Transform.rotate_around(self.axis2, angle2)
+        self.transform.rotation = np.dot(rot2, self.transform.rotation)
+
+
 
 class Skeleton(object):
     def __init__(self, joints):

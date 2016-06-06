@@ -3,36 +3,7 @@ import xml.etree.ElementTree as ET
 
 from vsk_parser.src.character import Joint, JointHinge, Transform, Skeleton
 from vsk_parser.src.skeleton_drawer import render_skeleton
-
-
-def extract_joint(element, current_id, parent_id):
-    import numpy as np
-
-    transform = Transform()
-
-    if element.find("JointHinge") is not None:
-        joint_el = element.find("JointHinge")
-        joint = JointHinge(current_id, parent_id)
-        axis = joint_el.get("AXIS").strip().split()
-        axis = np.array(map(float, axis))
-        joint.store_params(*axis)
-    else:
-        joint_el = element[0]
-        joint = Joint(current_id, parent_id)
-
-    translation = joint_el.get("PRE-POSITION").strip().split()
-    translation = np.array(map(float, translation))
-    transform.translation = translation
-
-    angles = joint_el.get("PRE-ORIENTATION").strip().split()
-    x, y, z = np.array(map(float, angles))
-    transform.rotation = Transform.from_euler_rad(x, y, z)
-
-    joint.transform = transform
-    joint.name = joint_el.get("NAME")
-
-    return joint
-
+from vsk_parser.src.jointVSKFactory import create_joint
 
 def parse_skeleton(skeleton_root_el):
     joints = []
@@ -48,8 +19,7 @@ def parse_skeleton(skeleton_root_el):
     while len(stack) > 0:
         current_id = available_id()
         el, parent_id = stack.pop()
-
-        joint = extract_joint(el, current_id, parent_id)
+        joint = create_joint(el, current_id, parent_id)
         joints.append(joint)
         name2joint_id[joint.name] = current_id
 
@@ -68,8 +38,11 @@ def main(xml_name):
     leg = joints[name2joint_id["LeftUpLeg_LeftLeg"]]
     leg.move(45)
 
+    hand = joints[name2joint_id["RightArm_RightForeArm"]]
+    hand.move(90, 90)
+
     skeleton = Skeleton(joints)
-    render_skeleton(skeleton, display_names=False)
+    render_skeleton(skeleton, display_names=True)
 
 
 
