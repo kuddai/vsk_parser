@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 import numpy as np
 
 from vicon_anim_parser.src.character import Skeleton
-from vicon_anim_parser.src.skeleton_drawer import render_skeleton
+from vicon_anim_parser.src.skeleton_drawer import show_skeleton_structure
 from vicon_anim_parser.src.jointVSKFactory import create_joint
 
 def _parse_skeleton_from_root(skeleton_root_el):
@@ -47,8 +47,8 @@ def main():
     skeleton.update_global_transform()
     ##just checking whether skeleton was parsed correctly or not
 
-    skeleton.move_to_origin()
-    render_skeleton(skeleton, display_names=True)
+    #skeleton.move_to_origin()
+    show_skeleton_structure(skeleton)
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,6 @@
 import sys
 
-from vicon_anim_parser.src.skeleton_drawer import render_skeleton, render_skeleton_anim, render_skeleton_anim2
+from vicon_anim_parser.src.skeleton_drawer import show_skeleton_structure, show_skeleton_anim
 from vicon_anim_parser.src.vsk_parser import parse_skeleton_structure
 from vicon_anim_parser.src.csv_anim_parser import parse_animations
 
@@ -39,26 +39,18 @@ def main():
                 params = raw_animation[joint_name]
                 joint.move(*params)
 
-            skeleton.move_to_origin()
+            #skeleton.move_to_origin()
             skeleton.update_global_transform()
             # yield skeleton
             skeletons.append(skeleton)
 
         print "animations are loaded"
 
-        for skeleton_id in xrange(625, len(skeletons)):# len(skeletons)):
+        for skeleton_id in xrange(500, len(skeletons)):# len(skeletons)):
             skeleton = skeletons[skeleton_id]
             yield skeleton
 
-    render_skeleton_anim2(animation_gen(), skeleton_original, display_names=False)
-
-
-
-
-    # for name, joint_id in name2joint_id.items():
-    #   print name
-    #   print joints[joint_id].transform, "\n"
-    #print_skeleton_lengths(skeleton_root_el)
+    show_skeleton_anim(animation_gen())
 
 if __name__ == "__main__":
     main()
