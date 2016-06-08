@@ -1,7 +1,17 @@
 import numpy as np
 from numbers import Real
 
+"""
+module to represent character skeleton
+Standalone probes can be represented by single free joint.
+"""
+
 class Transform(object):
+    """
+    4x4 matrix which contains current position and rotation of element (joint).
+    Useful intermediate representation for rendering and storing.
+    """
+
     def __init__(self, m4x4 = None):
         if m4x4 is None:
             m4x4 = np.eye(4)
@@ -108,6 +118,10 @@ class Joint(object):
         return self.current_id == 0
 
     def store_params(self, *params):
+        """
+        save additional parameter specific for this joint
+        (important for subclasses)
+        """
         pass
 
     def move(self, *params):
@@ -188,11 +202,34 @@ class JointUniversal(Joint):
 
 
 class Skeleton(object):
-    def __init__(self, joints):
+    def __init__(self, joints, name2joint_id):
         self.joints = joints
         self.update_global_transform()
+        self.name2joint_id = name2joint_id
+
+    def get_joints_names(self):
+        return self.name2joint_id.keys()
+
+    def get_joint_by_name(self, name):
+        joint_id = self.name2joint_id[name]
+        return self.joints[joint_id]
+
+    def move_to_origin(self):
+        root = self.get_root()
+        root.transform.translation = np.zeros(3)
+        self.update_global_transform()
+
+    def get_root(self):
+        return self.joints[0]
+
+    def get_num_joints(self):
+        return len(self.joints)
+
 
     def update_global_transform(self):
+        """
+        this function must be called after each change of skeleton's joints
+        """
         joints = self.joints
         calc_glob_trans = self._calc_global_transform
         global_transforms = [calc_glob_trans(joint_id) for joint_id in xrange(len(joints))]
@@ -208,8 +245,7 @@ class Skeleton(object):
 
         return result
 
-    def get_num_joints(self):
-        return len(self.joints)
+
 
 
 

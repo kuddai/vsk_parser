@@ -1,5 +1,5 @@
 import numpy as np
-from vsk_parser.src.character import Joint, JointHinge, \
+from vicon_anim_parser.src.character import Joint, JointHinge, \
 JointBall, JointFree, JointUniversal, Transform
 
 def create_joint(xml_el, current_id, parent_id):
@@ -23,6 +23,7 @@ def _create_specific_joint(xml_el, current_id, parent_id):
     def parse_joint(tag_name, joint_element):
         joint_constructor, attr_name = joint_tags[tag_name]
         joint = joint_constructor(current_id, parent_id)
+
         if attr_name is not None:
             params = joint_element.get(attr_name).strip().split()
             joint.store_params(*map(float, params))
