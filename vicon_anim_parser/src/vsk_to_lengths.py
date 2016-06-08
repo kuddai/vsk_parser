@@ -27,7 +27,7 @@ def main():
     #
     # skeleton.move_to_origin()
     # skeleton.update_global_transform()
-    #
+    # df
     # render_skeleton(skeleton, display_names=True)
 
     def animation_gen():
