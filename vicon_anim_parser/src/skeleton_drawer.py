@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 #without it there will be exception here:
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.animation as animation
+import numpy as np
 
 
 def get_max_length(skeleton):
@@ -94,6 +95,59 @@ def show_skeleton_anim(animations_generator, FPS=30):
         return lines, pts
 
     scale_equally(ax, first_frame_skeleton)
+    interval = 1000/FPS
+    #blit=False is necessary for Mac OS X (exception otherwise)
+    #We need to keep these reference as well, otherwise it would be picked up by GB
+    anim = animation.FuncAnimation(fig, animate, animations_generator, interval=interval, init_func=init, blit=False, repeat=False)
+
+    plt.xlabel('x')
+    plt.ylabel('z')
+    plt.show()
+
+
+def scale_equally_markers(ax, markers):
+    x, y, z = markers
+    coords = np.concatenate((x, y, z))
+    coords = abs(coords)
+    ADDITIONAL_SPACE_FACTOR = 1.5
+    max_length = max(coords) * ADDITIONAL_SPACE_FACTOR
+
+    ax.set_xlim3d(-max_length, max_length)
+    ax.set_ylim3d(-max_length, max_length)
+    ax.set_zlim3d(-max_length, max_length)
+
+
+
+
+def show_markers_anim(animations_generator, FPS=30):
+    first_frame_markers = next(animations_generator)
+    x, y, z = first_frame_markers
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    num_lines =  len(x)
+    #marker points points
+    pts,   = ax.plot([], [], [], 'o', c="r")
+
+    start_point = np.array([sum(x), sum(y), sum(z)]) / num_lines
+
+    def init():
+        pts.set_data([], [])
+        pts.set_3d_properties([])
+        return pts
+
+    def animate(markers):
+        x, y, z = markers
+            #flip 1 and 2 to change y and z axis as in our data y is vertical one
+        x = x - start_point[0]
+        y = y - start_point[1]
+        z = z - start_point[2]
+
+        pts.set_data(x, y)
+        pts.set_3d_properties(z)
+
+        return pts,
+
+    scale_equally_markers(ax, first_frame_markers)
     interval = 1000/FPS
     #blit=False is necessary for Mac OS X (exception otherwise)
     #We need to keep these reference as well, otherwise it would be picked up by GB

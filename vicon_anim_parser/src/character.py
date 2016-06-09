@@ -31,6 +31,22 @@ class Transform(object):
         return Transform.from_euler_rad(x, y, z)
 
     @staticmethod
+    def create_m4x4(rot, trans=np.zeros(3)):
+        m4x4 = np.eye(4)
+        m4x4[0:3, 0:3] = rot
+        m4x4[0:3, 3] = trans
+        return  m4x4
+
+    @staticmethod
+    def create_transform(rot, trans=np.zeros(3)):
+        result = Transform()
+        result.rotation = rot
+        result.translation = trans
+        return result
+
+
+
+    @staticmethod
     def from_euler_rad(x, y, z):
         """
         return 3x3 rotation matrix
@@ -165,15 +181,15 @@ class JointHinge(Joint):
 
         self.axis = np.array(axis)
 
-    def move(self, *angle):
+    def move(self, *angle_deg):
         """
-        :param angle: angle in degrees
+        :param angle_deg: angle in degrees
         """
-        assert len(angle) == 1
-        assert all(isinstance(arg, Real) for arg in angle)
-        angle = angle[0]
+        assert len(angle_deg) == 1
+        assert all(isinstance(arg, Real) for arg in angle_deg)
+        angle_deg = angle_deg[0]
 
-        rot = Transform.rotate_around(self.axis, angle)
+        rot = Transform.rotate_around(self.axis, angle_deg)
         self.transform.rotation = np.dot(rot, self.transform.rotation)
 
 class JointUniversal(Joint):

@@ -25,6 +25,9 @@ def main():
     def animation_gen():
         #skeletons = []
         for frame_id, raw_animation in enumerate(parse_animations(csv_file_name)):
+            if frame_id + 1 < 500:
+                continue
+
             skeleton = deepcopy(skeleton_original)
             for joint_name in skeleton.get_joints_names():
                 joint = skeleton.get_joint_by_name(joint_name)
@@ -33,7 +36,7 @@ def main():
 
             #skeleton.move_to_origin()
             skeleton.update_global_transform()
-            print "finished frame", frame_id
+            print "finished frame", frame_id + 1
             yield skeleton
             #skeletons.append(skeleton)
 
@@ -43,8 +46,10 @@ def main():
         #     skeleton = skeletons[skeleton_id]
         #     yield skeleton
 
-    #show_skeleton_anim(animation_gen())
-    show_joint_negative_values("LeftArm_LeftForeArm", csv_file_name)
+    show_skeleton_anim(animation_gen())
+    #show_joint_negative_values("LeftArm_LeftForeArm", csv_file_name)
+
 
 if __name__ == "__main__":
+    #python vicon_anim_parser/src/vsk_to_lengths.py Ruslan.vsk "Ruslan Cal 03.csv"
     main()
