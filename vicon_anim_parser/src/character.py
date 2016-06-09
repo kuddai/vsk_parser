@@ -172,8 +172,11 @@ class JointFree(Joint):
         #translation
         trans = np.array([x, y, z])
 
-        transf = Transform.create_transform(rot, trans)
-        self.transform = transf
+        self.transform.rotation = rot
+        self.transform.translation = trans
+
+        # transf = Transform.create_transform(rot, trans)
+        # self.transform = transf
 
 
 class JointHinge(Joint):

@@ -53,8 +53,8 @@ def main():
     # left_leg.move(0, 0, 90)
 
     # #hips root
-    # root = skeleton.get_joint_by_name("World_Hips")
-    # root.move(45, 45, 0, 1500, 0, 1500)
+    root = skeleton.get_joint_by_name("World_Hips")
+    root.move(-91.56, -0.59, 173.5, 0, 0, 0) #-91.5623,-0.594814,173.508
 
     skeleton.update_global_transform()
     #just checking whether skeleton was parsed correctly or not
@@ -62,5 +62,5 @@ def main():
     show_skeleton_structure(skeleton, show_joint_names=False)
 
 if __name__ == "__main__":
-    #vicon_anim_parser/src/vsk_parser.py Ruslan.vsk
+    # python vicon_anim_parser/src/vsk_parser.py Ruslan.vsk
     main()
