@@ -45,14 +45,31 @@ def _create_specific_joint(xml_el, current_id, parent_id):
     return joint, joint_element
 
 def _build_common_all(joint, joint_el):
+    """
+    from here:
+    https://github.com/jslee02/vsk/tree/master/docs
+
+    The orientation is specified as a helical vector. The
+    direction of this vector gives the direction of the axis.
+    The magnitude of this vector gives the amount of
+    rotation around that axis in radians.
+    """
+
     transform = Transform()
     translation = joint_el.get("PRE-POSITION").strip().split()
     translation = np.array(map(float, translation))
     transform.translation = translation
 
     angles = joint_el.get("PRE-ORIENTATION").strip().split()
-    x, y, z = np.array(map(float, angles))
-    transform.rotation = Transform.from_euler_rad(x, y, z)
+
+    axis = np.array(map(float, angles))
+    magnitude = np.linalg.norm(axis)
+    if abs(magnitude) < 0.0001:
+        #magnitude = angle is too small -> rotation is just identity matrix
+        transform.rotation = np.eye(3)
+    else:
+        axis = axis / magnitude
+        transform.rotation = Transform.rotate_around_rad(axis, magnitude)
 
     joint.transform = transform
     joint.name = joint_el.get("NAME")

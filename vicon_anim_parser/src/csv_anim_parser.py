@@ -63,12 +63,13 @@ def parse_animations(csv_file_name, max_anims = float("inf")):
         #yield raw skeleton
         #return parse_anim(joint_names, terms)
         n = 0
-        while line != "" and line != "Trajectories" and n < max_anims:
+        while len(line) > 0 and line != "Trajectories" and n < max_anims:
             terms = line.split(",")
 
             #yield raw skeleton
             yield parse_anim(joint_names, terms)
             line = next(csv)
+            line = line.strip()
             n += 1
 
 

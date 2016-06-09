@@ -51,11 +51,11 @@ class Transform(object):
         return np.dot(Rz, np.dot(Ry, Rx))
 
     @staticmethod
-    def rotate_around_rad(axis, angle):
+    def rotate_around_rad(axis, angle_rad):
         """
         http://inside.mines.edu/fs_home/gmurray/ArbitraryAxisRotation/
         :param axis: vector 3
-        :param angle: angle in radians
+        :param angle_rad: angle in radians
         :return: rotation by angle around axis
         """
         from math import cos, sin
@@ -71,17 +71,17 @@ class Transform(object):
         uw = u*w
         vw = v*w
 
-        cos_t = cos(angle)
-        sin_t = sin(angle)
+        cos_t = cos(angle_rad)
+        sin_t = sin(angle_rad)
 
         return np.array([[u2 + (1-u2)*cos_t,      uv*(1-cos_t) - w*sin_t, uw*(1-cos_t) + v*sin_t],
                          [uv*(1-cos_t) + w*sin_t, v2 + (1-v2)*cos_t,      vw*(1-cos_t) - u*sin_t],
                          [uw*(1-cos_t) - v*sin_t, vw*(1-cos_t) + u*sin_t, w2 + (1-w2)*cos_t     ]])
 
     @staticmethod
-    def rotate_around(axis, angle):
+    def rotate_around(axis, angle_deg):
         from math import radians
-        return Transform.rotate_around_rad(axis, radians(angle))
+        return Transform.rotate_around_rad(axis, radians(angle_deg))
 
     @property
     def rotation(self):
@@ -194,10 +194,10 @@ class JointUniversal(Joint):
         angle1, angle2 = angles
 
         rot1 = Transform.rotate_around(self.axis1, angle1)
-        self.transform.rotation = np.dot(rot1, self.transform.rotation)
+        #rot  = np.dot(rot1, self.transform.rotation)
 
         rot2 = Transform.rotate_around(self.axis2, angle2)
-        self.transform.rotation = np.dot(rot2, self.transform.rotation)
+        self.transform.rotation = np.dot(rot2, np.dot(rot1, self.transform.rotation))
 
 
 

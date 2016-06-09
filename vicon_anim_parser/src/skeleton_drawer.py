@@ -11,12 +11,13 @@ def get_max_length(skeleton):
     return max_length
 
 def scale_equally(ax, skeleton):
-    max_length = get_max_length(skeleton)*2
+    ADDITIONAL_SPACE_FACTOR = 1.5
+    max_length = get_max_length(skeleton) * ADDITIONAL_SPACE_FACTOR
     ax.set_xlim3d(-max_length, max_length)
     ax.set_ylim3d(-max_length, max_length)
     ax.set_zlim3d(-max_length, max_length)
 
-def draw_skeleton(ax, skeleton):
+def draw_skeleton(ax, skeleton, show_joint_names):
     glob_trans = skeleton.global_transforms
     #all joints except root (it has id 0 so we need range [1:])
     for joint in skeleton.joints[1:]:
@@ -33,21 +34,22 @@ def draw_skeleton(ax, skeleton):
         #here inverse because y and z axis are inversed
         ax.plot(line[0], line[2], line[1], color="b")
         ax.scatter(x, z, y, color="r", marker=".")
-        ax.text(x, z, y, joint.name, size=10, zorder=1, color='k')
+        if show_joint_names:
+            ax.text(x, z, y, joint.name, size=10, zorder=1, color='k')
 
-def show_skeleton_structure(skeleton):
+def show_skeleton_structure(skeleton, show_joint_names=True):
     fig = plt.figure()
     ax = fig.gca(projection='3d')
 
     scale_equally(ax, skeleton)
-    draw_skeleton(ax, skeleton)
+    draw_skeleton(ax, skeleton, show_joint_names)
 
     plt.xlabel('x')
     plt.ylabel('z')
     plt.show()
 
-def show_skeleton_anim(animations, FPS=30):
-    first_frame_skeleton = next(animations)
+def show_skeleton_anim(animations_generator, FPS=30):
+    first_frame_skeleton = next(animations_generator)
     fig = plt.figure()
     ax = fig.gca(projection='3d')
     #all joints except root
@@ -95,7 +97,7 @@ def show_skeleton_anim(animations, FPS=30):
     interval = 1000/FPS
     #blit=False is necessary for Mac OS X (exception otherwise)
     #We need to keep these reference as well, otherwise it would be picked up by GB
-    anim = animation.FuncAnimation(fig, animate, animations, interval=interval, init_func=init, blit=False, repeat=False)
+    anim = animation.FuncAnimation(fig, animate, animations_generator, interval=interval, init_func=init, blit=False, repeat=False)
 
     plt.xlabel('x')
     plt.ylabel('z')
