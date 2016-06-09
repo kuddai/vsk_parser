@@ -7,8 +7,7 @@ from vicon_anim_parser.src.vsk_parser import parse_skeleton_structure
 def show_joint_negative_values(joint_name, csv_file_name):
     for frame_id, raw_animation in enumerate(parse_animations(csv_file_name)):
         params = raw_animation[joint_name]
-
-        if params[0] < 0:
+        if params[0] < 0 and params[1] < 0:
             output = "frame_id {:6}, param1 {:04}, param2 {:04}".format(frame_id + 1, int(params[0]), int(params[1]))
             print output
 

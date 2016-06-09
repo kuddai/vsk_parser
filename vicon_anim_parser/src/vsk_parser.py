@@ -59,7 +59,7 @@ def main():
     skeleton.update_global_transform()
     #just checking whether skeleton was parsed correctly or not
 
-    show_skeleton_structure(skeleton, show_joint_names=False)
+    show_skeleton_structure(skeleton, show_joint_names=True)
 
 if __name__ == "__main__":
     # python vicon_anim_parser/src/vsk_parser.py Ruslan.vsk

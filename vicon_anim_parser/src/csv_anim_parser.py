@@ -68,7 +68,7 @@ def parse_animations(csv_file_name, max_num_anims = float("inf")):
         #yield raw skeleton
         #return parse_anim(joint_names, terms)
         num_anims = 0
-        while len(line) > 0 and line != "Trajectories" and num_anims < max_num_anims:
+        while not line.isspace() and line != "Trajectories" and num_anims < max_num_anims:
             line = line.strip()
             terms = line.split(",")
 
@@ -76,6 +76,8 @@ def parse_animations(csv_file_name, max_num_anims = float("inf")):
             yield parse_anim(joint_names, terms)
             line = next(csv)
             num_anims += 1
+
+        raise StopIteration()
 
 def parse_markers(csv_file_name, max_num_anims = float("inf")):
     with open(csv_file_name) as csv:
@@ -86,7 +88,7 @@ def parse_markers(csv_file_name, max_num_anims = float("inf")):
         line = next(csv)
         num_anims = 0
 
-        while len(line) > 0 and line != " " and num_anims < max_num_anims:
+        while not line.isspace() and num_anims < max_num_anims:
             line = line.strip()
             coords = line.split(",")
             #skip frame and subframe
