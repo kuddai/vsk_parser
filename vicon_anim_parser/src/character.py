@@ -154,10 +154,10 @@ class JointBall(Joint):
 
         rx, ry, rz = rot_euler
         rot = Transform.from_euler(rx, ry, rz)
-        transf = Transform.create_transform(rot)
-        self.transform = transf * self.transform
+        #transf = Transform.create_transform(rot)
+        self.transform.rotation = np.dot(rot, self.transform.rotation)
 
-class JointFree(JointBall):
+class JointFree(Joint):
 
     def move(self, *rot_euler_pos):
         """
@@ -173,7 +173,7 @@ class JointFree(JointBall):
         trans = np.array([x, y, z])
 
         transf = Transform.create_transform(rot, trans)
-        self.transform = transf * self.transform
+        self.transform = transf
 
 
 class JointHinge(Joint):
@@ -193,8 +193,9 @@ class JointHinge(Joint):
         angle_deg = angle_deg[0]
 
         rot = Transform.rotate_around(self.axis, angle_deg)
-        transf = Transform.create_transform(rot)
-        self.transform = transf * self.transform
+        self.transform.rotation = np.dot(rot, self.transform.rotation)
+        #transf = Transform.create_transform(rot)
+        #self.transform = transf * self.transform
 
 class JointUniversal(Joint):
 
@@ -219,9 +220,10 @@ class JointUniversal(Joint):
         rot2 = Transform.rotate_around(self.axis2, angle2)
 
         rot = np.dot(rot2, rot1)
-
-        transf = Transform.create_transform(rot)
-        self.transform = transf * self.transform
+        self.transform.rotation = np.dot(rot, self.transform.rotation)
+        #
+        # transf = Transform.create_transform(rot)
+        # self.transform = transf * self.transform
 
 
 

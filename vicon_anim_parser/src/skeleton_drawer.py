@@ -81,16 +81,18 @@ def show_skeleton_anim(animations_generator, FPS=30):
             joint_end_id = joint.parent_id
 
             #center skeleton
-            joint_beg = glob_trans[joint_beg_id].translation - start_point
-            joint_end = glob_trans[joint_end_id].translation - start_point
+            joint_beg = glob_trans[joint_beg_id].translation# - start_point
+            joint_end = glob_trans[joint_end_id].translation# - start_point
 
             data = zip(joint_beg, joint_end)
+            z = map(lambda d: -d, data[2])
             #flip 1 and 2 to change y and z axis as in our data y is vertical one
-            line.set_data(data[0], data[2])
-            line.set_3d_properties(data[1])
+            line.set_data(data[0], data[1])
 
-            pt.set_data(data[0], data[2])
-            pt.set_3d_properties(data[1])
+            line.set_3d_properties(z)
+
+            pt.set_data(data[0], data[1])
+            pt.set_3d_properties(z)
 
         return lines, pts
 
