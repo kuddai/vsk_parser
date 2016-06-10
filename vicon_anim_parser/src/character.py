@@ -64,7 +64,9 @@ class Transform(object):
                        [ sin(z),  cos(z),       0],
                        [ 0,       0,            1]])
 
-        return np.dot(Rz, np.dot(Ry, Rx))
+        #return np.dot(Rz, np.dot(Ry, Rx))
+        #return np.dot(np.dot(Rz, Ry), Rx)
+        return np.dot(Rx, np.dot(Ry, Rz))
 
     @staticmethod
     def rotate_around_rad(axis, angle_rad):
@@ -155,7 +157,7 @@ class JointBall(Joint):
         rx, ry, rz = rot_euler
         rot = Transform.from_euler(rx, ry, rz)
         #transf = Transform.create_transform(rot)
-        self.transform.rotation = np.dot(rot, self.transform.rotation)
+        self.transform.rotation = np.dot(self.transform.rotation, rot)
 
 class JointFree(Joint):
 
@@ -222,7 +224,7 @@ class JointUniversal(Joint):
 
         rot2 = Transform.rotate_around(self.axis2, angle2)
 
-        rot = np.dot(rot2, rot1)
+        rot = np.dot(rot1, rot2)
         self.transform.rotation = np.dot(rot, self.transform.rotation)
         #
         # transf = Transform.create_transform(rot)
