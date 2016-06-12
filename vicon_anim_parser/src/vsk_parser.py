@@ -43,9 +43,9 @@ def main():
     skeleton = parse_skeleton_structure(vsk_file_name)
     skeleton.move_to_origin()
 
-    # #moving hand
-    # left_arm = skeleton.get_joint_by_name("LeftArm_LeftForeArm")
-    # left_arm.move(90, 0)
+    #moving hand
+    left_arm = skeleton.get_joint_by_name("LeftArm_LeftForeArm")
+    left_arm.move(90, 0)
     #
     #
     # #moving leg
@@ -59,7 +59,7 @@ def main():
     skeleton.update_global_transform()
     #just checking whether skeleton was parsed correctly or not
 
-    show_skeleton_structure(skeleton, show_joint_names=True)
+    show_skeleton_structure(skeleton, show_joint_names=False)
 
 if __name__ == "__main__":
     # python vicon_anim_parser/src/vsk_parser.py Ruslan.vsk
