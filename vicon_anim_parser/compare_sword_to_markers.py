@@ -4,9 +4,7 @@ import numpy as np
 from math import radians, degrees
 from transforms3d import euler
 from vicon_anim_parser.src.character import Transform, JointFree
-from vicon_anim_parser.src.skeleton_drawer import show_skeleton_structure, show_skeleton_anim, scale_equally_markers
 from vicon_anim_parser.src.csv_anim_parser import parse_animations, parse_markers
-from vicon_anim_parser.src.vsk_parser import parse_skeleton_structure
 
 
 def gen_sword_anims(csv_file_name):
@@ -115,4 +113,5 @@ def main():
 
 
 if __name__ == "__main__":
+    #python vicon_anim_parser/compare_sword_to_markers.py Ruslan.vsk "Ruslan Cal 03.csv"
     main()

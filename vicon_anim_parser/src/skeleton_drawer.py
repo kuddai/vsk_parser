@@ -5,6 +5,32 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.animation as animation
 import numpy as np
 
+class SkeletonDrawer(object):
+
+    def __init__(self, ax, lines):
+        self.ax = ax
+        self.lines = lines
+
+    def animate(self, skeleton):
+        from itertools import izip
+        glob_trans = skeleton.global_transforms
+
+        #all joints except root (it has id 0 so we need range [1:])
+        for line, joint in izip(self.lines, skeleton.joints[1:]):
+            joint_beg_id = joint.current_id
+            joint_end_id = joint.parent_id
+
+            #center skeleton
+            joint_beg = glob_trans[joint_beg_id].translation
+            joint_end = glob_trans[joint_end_id].translation
+
+            data = zip(joint_beg, joint_end)
+            #flip 1 and 2 to change y and z axis as in our data y is vertical one
+            line.set_data(data[0], data[1])
+            line.set_3d_properties(data[2])
+
+        return self.lines,
+
 
 def get_max_length(skeleton):
     trans = skeleton.global_transforms
