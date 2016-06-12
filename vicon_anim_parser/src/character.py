@@ -20,19 +20,7 @@ class Transform(object):
         self.m4x4 = m4x4
 
     @staticmethod
-    def from_euler(x,y,z):
-        """
-        return 3x3 rotation matrix
-        """
-
-        from math import radians
-        x = radians(x)
-        y = radians(y)
-        z = radians(z)
-        return Transform.from_euler_rad(x, y, z)
-
-    @staticmethod
-    def create_m4x4(rot, trans=np.zeros(3)):
+    def create_hom_mat(rot, trans=np.zeros(3)):
         m4x4 = np.eye(4)
         m4x4[0:3, 0:3] = rot
         m4x4[0:3, 3] = trans
@@ -46,28 +34,26 @@ class Transform(object):
         return result
 
 
+    @staticmethod
+    def from_euler(x,y,z):
+        """
+        return 3x3 rotation matrix
+        """
+
+        from math import radians
+        x = radians(x)
+        y = radians(y)
+        z = radians(z)
+        return Transform.from_euler_rad(x, y, z)
 
     @staticmethod
     def from_euler_rad(x, y, z):
         """
         return 3x3 rotation matrix
+        rotation is intrinsic xyz rotation
+        (rotations around axes of rotating coordinate system).
         """
-        from math import cos, sin
-        Rx = np.array([[ 1,       0,       0     ],
-                       [ 0,       cos(x), -sin(x)],
-                       [ 0,       sin(x),  cos(x)]])
-
-        Ry = np.array([[ cos(y),  0,       sin(y)],
-                       [ 0,       1,            0],
-                       [-sin(y),  0,       cos(y)]])
-
-        Rz = np.array([[ cos(z), -sin(z),       0],
-                       [ sin(z),  cos(z),       0],
-                       [ 0,       0,            1]])
-
-        #return np.dot(Rz, np.dot(Ry, Rx))
-        #return np.dot(np.dot(Rz, Ry), Rx)
-        return np.dot(Rx, np.dot(Ry, Rz))
+        return euler.euler2mat(x, y, z, axes="rxyz")
 
     @staticmethod
     def rotate_around_rad(axis, angle_rad):
