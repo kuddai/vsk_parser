@@ -138,7 +138,7 @@ class Joint(object):
     def store_params(self, *params):
         """
         save additional parameter specific for this joint
-        (important for subclasses)
+        (important for subclasses) f
         """
         pass
 
