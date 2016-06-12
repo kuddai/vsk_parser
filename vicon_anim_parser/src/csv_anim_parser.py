@@ -110,7 +110,6 @@ def parse_markers(csv_file_name, max_num_anims = float("inf")):
 
 
 
-
 if __name__ == "__main__":
     result = next(parse_animations(sys.argv[1]))
     print result

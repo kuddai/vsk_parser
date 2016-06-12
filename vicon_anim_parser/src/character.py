@@ -1,5 +1,6 @@
 import numpy as np
 from numbers import Real
+from transforms3d import euler
 
 """
 module to represent character skeleton
