@@ -145,6 +145,7 @@ class JointBall(Joint):
         rot = Transform.from_euler(rx, ry, rz)
         #transf = Transform.create_transform(rot)
         self.transform.rotation = np.dot(self.transform.rotation, rot)
+        #self.transform.rotation = np.dot(rot, self.transform.rotation)
 
 class JointFree(Joint):
 
@@ -152,8 +153,8 @@ class JointFree(Joint):
         """
         :param rot_euler_pos: euler angles in degrees and positions
         """
-        assert len(rot_euler_pos) == 6, len(rot_euler_pos)
-        assert all(isinstance(arg, Real) for arg in rot_euler_pos)
+        assert len(rot_euler_pos) == 6, rot_euler_pos
+        assert all(isinstance(arg, Real) for arg in rot_euler_pos), rot_euler_pos
 
         rx, ry, rz, x, y, z = rot_euler_pos
         #do rotation
@@ -161,11 +162,11 @@ class JointFree(Joint):
         #translation
         trans = np.array([x, y, z])
 
-        self.transform.rotation = rot
-        self.transform.translation = trans
-
-        # transf = Transform.create_transform(rot, trans)
-        # self.transform = transf
+        #in the file pre-orientation is 0 for all free joints and initial
+        #self.transform.rotation is unit matrix  ->
+        #self.transform * transf and transf * self.transform are the same
+        transf = Transform.create_transform(rot, trans)
+        self.transform = self.transform * transf
 
 
 class JointHinge(Joint):
@@ -185,7 +186,11 @@ class JointHinge(Joint):
         angle_deg = angle_deg[0]
 
         rot = Transform.rotate_around(self.axis, angle_deg)
-        self.transform.rotation = np.dot(rot, self.transform.rotation)
+
+        #one degree of freedom ->
+        #np.dot(self.transform.rotation, rot) and np.dot(rot, self.transform.rotation) are the same
+        self.transform.rotation = np.dot(self.transform.rotation, rot)
+
         #transf = Transform.create_transform(rot)
         #self.transform = transf * self.transform
 
@@ -212,7 +217,11 @@ class JointUniversal(Joint):
         rot2 = Transform.rotate_around(self.axis2, angle2)
 
         rot = np.dot(rot1, rot2)
-        self.transform.rotation = np.dot(rot, self.transform.rotation)
+
+        #in the file pre-orientation is 0 for unversal joints and initial
+        #self.transform.rotation is unit matrix  ->
+        #np.dot(self.transform.rotation, rot) and np.dot(rot, self.transform.rotation) are the same
+        self.transform.rotation = np.dot(self.transform.rotation, rot)
         #
         # transf = Transform.create_transform(rot)
         # self.transform = transf * self.transform

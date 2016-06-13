@@ -45,7 +45,7 @@ def parse_anim(joint_names, csv_line_terms):
 
         params.append(term)
     #store last one
-    raw_skeleton[current_joint_name] = params
+    raw_skeleton[current_joint_name] = map(str2int, params)
     #delete empty data (it must be frame and subframe information)
     del raw_skeleton[""]
     return raw_skeleton

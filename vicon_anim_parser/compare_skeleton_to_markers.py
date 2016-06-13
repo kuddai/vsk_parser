@@ -8,33 +8,6 @@ from vicon_anim_parser.src.skeleton_drawer import show_skeleton_structure, show_
 from vicon_anim_parser.src.csv_anim_parser import parse_animations, parse_markers
 from vicon_anim_parser.src.vsk_parser import parse_skeleton_structure
 
-def gen_sword_anims(csv_file_name, beg_frame, end_frame):
-    num_empty_frames = 0
-    for i, raw_anim in enumerate(parse_animations(csv_file_name)):
-        frame_id = i + 1
-
-        if frame_id < beg_frame:
-            continue
-        if frame_id > end_frame:
-            break
-
-        try:
-            coords = map(float, raw_anim["World_SwordSegment"])
-            if frame_id == 1:
-                first_coords = coords
-            joint = JointFree(0, -1)
-            joint.move(*coords)
-            yield joint
-
-        except ValueError:
-            num_empty_frames += 1
-            print "frame", frame_id, "is empty", raw_anim["World_SwordSegment"]
-            #yiled None to preserve frame order
-            yield None
-
-    print "number of empty frames", num_empty_frames
-
-
 def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
     from copy import deepcopy
     print "vsk parsed"
@@ -54,12 +27,14 @@ def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
             params = raw_animation[joint_name]
             joint.move(*params)
 
+
+
         skeleton.update_global_transform()
         yield skeleton
 
 
 #data -> tuples of skeleton and markers for each frame
-def draw_skeleton_and_markers(data, beg_frame=1, FPS=90):
+def draw_skeleton_and_markers(data, beg_frame=1, FPS=1):
     from vicon_anim_parser.src.skeleton_drawer import SkeletonDrawer
     import matplotlib.pyplot as plt
     #this import is necessary for plt.figure().gca(projection='3d') line
@@ -115,7 +90,7 @@ def draw_skeleton_and_markers(data, beg_frame=1, FPS=90):
     anim = animation.FuncAnimation(fig, animate, frames=len(data), interval=interval, init_func=init, blit=False, repeat=False)
 
     plt.xlabel('x')
-    plt.ylabel('z')
+    plt.ylabel('y')
     plt.show()
 
 def main():
@@ -124,8 +99,8 @@ def main():
 
     print vsk_file_name, csv_file_name
 
-    beg_frame = 2000
-    end_frame = 3000
+    beg_frame = 885
+    end_frame = 1003
 
     skeletons = list(gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame))
     print "skeletons parsed", len(skeletons)

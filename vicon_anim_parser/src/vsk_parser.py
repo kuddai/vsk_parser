@@ -44,17 +44,21 @@ def main():
     skeleton.move_to_origin()
 
     #moving hand
-    left_arm = skeleton.get_joint_by_name("LeftArm_LeftForeArm")
-    left_arm.move(90, 0)
-    #
-    #
+    # left_arm = skeleton.get_joint_by_name("LeftArm_LeftForeArm")
+    # left_arm.move(45, 45)
+
+
     # #moving leg
     # left_leg = skeleton.get_joint_by_name("Hips_LeftUpLeg")
     # left_leg.move(0, 0, 90)
 
     # #hips root
-    root = skeleton.get_joint_by_name("World_Hips")
-    root.move(-91.56, -0.59, 173.5, 0, 0, 0) #-91.5623,-0.594814,173.508
+    # root = skeleton.get_joint_by_name("World_Hips")
+    # root.move(-91.56, -0.59, 173.5, 0, 0, 0) #-91.5623,-0.594814,173.508
+
+    #problem shoulder on frame 2453
+    # left_shoulder = skeleton.get_joint_by_name("LeftShoulder_LeftArm")
+    # left_shoulder.move(146.154,	51.1199, 118.597)
 
     skeleton.update_global_transform()
     #just checking whether skeleton was parsed correctly or not

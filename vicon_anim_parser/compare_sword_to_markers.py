@@ -42,7 +42,7 @@ def draw_sword(sword_joints, markers_anim, beg_frame=1, end_frame=None, FPS=30):
 
     num_frames = end_frame - beg_frame + 1
     #marker points points
-    sword_pts,   = ax.plot([], [], [], 'o', c="r", markersize=9)
+    sword_pts,   = ax.plot([], [], [], '-o', c="r", markersize=9)
     markers_pts,  = ax.plot([], [], [], '.', c="b", markersize=7)
 
 
@@ -60,17 +60,18 @@ def draw_sword(sword_joints, markers_anim, beg_frame=1, end_frame=None, FPS=30):
 
         return sword_pts, markers_pts #, text_box
 
+    SWORD_LENGTH = 300
+
     def animate(i):
         frame_id = beg_frame + i
         #due to first element being 0
         el_id = frame_id - 1
         sword_joint, markers = sword_joints[el_id], markers_anim[el_id]
         if sword_joint is not None:
-            x, y, z = sword_joint.transform.translation
-            #flip 1 and 2 to change y and z axis as in our data y is vertical one
+            x0, y0, z0 = sword_joint.transform.translation
 
-            sword_pts.set_data(x, y)
-            sword_pts.set_3d_properties(z)
+            sword_pts.set_data(x0, y0)
+            sword_pts.set_3d_properties(z0)
 
         xx, yy, zz = markers
         markers_pts.set_data(xx, yy)
@@ -91,7 +92,7 @@ def draw_sword(sword_joints, markers_anim, beg_frame=1, end_frame=None, FPS=30):
     anim = animation.FuncAnimation(fig, animate, frames=num_frames, interval=interval, init_func=init, blit=False, repeat=False)
 
     plt.xlabel('x')
-    plt.ylabel('z')
+    plt.ylabel('y')
     plt.show()
 
 def main():
@@ -101,15 +102,14 @@ def main():
     print vsk_file_name, csv_file_name
     #skeleton_original = parse_skeleton_structure(vsk_file_name)
 
+    beg_frame = 600
+    end_frame = 900
 
-    # sword_anims = [map(float, raw_anim["World_SwordSegment"]) for ]
-    # print len(sword_anims)
-    # print sword_anims[0]
     sword_joints = list(gen_sword_anims(csv_file_name))
     markers_anim = list(parse_markers(csv_file_name))
     print len(sword_joints)
     print sword_joints[0].transform
-    draw_sword(sword_joints, markers_anim, 600)
+    draw_sword(sword_joints, markers_anim, beg_frame, end_frame)
 
 
 if __name__ == "__main__":
