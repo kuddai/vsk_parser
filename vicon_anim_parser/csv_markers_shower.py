@@ -1,6 +1,6 @@
 import sys
 
-from vicon_anim_parser.skeleton_drawer import show_markers_anim
+from vicon_anim_parser.scene_drawer import show_markers_anim
 from vicon_anim_parser.csv_anim_parser import parse_markers
 
 def main():

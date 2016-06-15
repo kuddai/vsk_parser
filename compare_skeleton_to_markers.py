@@ -1,13 +1,9 @@
 import sys
 
-import os
-print os.getcwd()
-
 import numpy as np
 from math import radians, degrees
-from vicon_anim_parser.character import Transform, JointFree
-from vicon_anim_parser.skeleton_drawer import show_skeleton_structure, show_skeleton_anim, scale_equally_markers
-from vicon_anim_parser.csv_anim_parser import parse_animations, parse_markers
+from vicon_anim_parser.scene_drawer import draw_scene
+from vicon_anim_parser.csv_anim_parser import parse_skeleton_animations, parse_markers
 from vicon_anim_parser.vsk_parser import parse_skeleton_structure
 
 def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
@@ -17,7 +13,7 @@ def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
 
     np.set_printoptions(suppress=True, precision=4)
 
-    for i, raw_animation in enumerate(parse_animations(csv_file_name)):
+    for i, raw_animation in enumerate(parse_skeleton_animations(csv_file_name)):
         frame_id = i + 1
 
         if frame_id < beg_frame:
@@ -31,7 +27,7 @@ def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
             params = raw_animation[joint_name]
             joint.move(*params)
 
-        skeleton.update_global_m4x4()
+        skeleton.update_global_transforms()
 
         # print frame_id
         # print skeleton.get_global_m4x4_by_name("Hips_Spine")
@@ -40,7 +36,7 @@ def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
 
 #data -> tuples of skeleton and markers for each frame
 def draw_skeleton_and_markers(data, beg_frame=1, FPS=30):
-    from vicon_anim_parser.skeleton_drawer import SkeletonDrawer
+    from vicon_anim_parser.scene_drawer import SkeletonDrawer
     import matplotlib.pyplot as plt
     #this import is necessary for plt.figure().gca(projection='3d') line
     #without it there will be exception here:
@@ -50,44 +46,26 @@ def draw_skeleton_and_markers(data, beg_frame=1, FPS=30):
     fig = plt.figure()
     ax = fig.gca(projection='3d')
 
-    num_lines  = data[0][0].get_num_joints() - 1
-    #marker points points
-
-    skeleton_lines = sum([ax.plot([], [], [], '-', c="r", linewidth=4.0)  for i in xrange(num_lines)], [])
-    markers_pts,   = ax.plot([], [], [], 'o', c="g", markersize=7)
-
-    skeletonDrawer = SkeletonDrawer(ax, skeleton_lines)
+    rest_pose_skeleton = data[0][0]
+    skeletonDrawer = SkeletonDrawer(ax, rest_pose_skeleton)
+    markersDrawer  = MarkersDrawer(ax)
 
     def init():
-        for line in skeleton_lines:
-            line.set_data([], [])
-            line.set_3d_properties([])
-
-        markers_pts.set_data([], [])
-        markers_pts.set_3d_properties([])
-
-        return skeleton_lines, markers_pts
+        skeleton_lines = skeletonDrawer.reinit()
+        markers_plot = markersDrawer.reinit()
+        return skeleton_lines, markers_plot
 
     def animate(i):
         frame_id = beg_frame + i
         #due to first element being 0
         skeleton, markers = data[i]
-
-        result = skeletonDrawer.animate(skeleton)
-
-        xx, yy, zz = markers
-        markers_pts.set_data(xx, yy)
-        markers_pts.set_3d_properties(zz)
-
-        #text_box.set_text(frame_id)
+        skeleton_lines = skeletonDrawer.draw(skeleton)
+        markers_plot   = markersDrawer.draw(markers)
         fig.suptitle("frame_id %r" % frame_id)
 
-        result += (markers_pts,)
-        return result
+        return skeleton_lines, markers_plot
 
-    ax.set_xlim3d(-2000, 2000)
-    ax.set_ylim3d(-2000, 2000)
-    ax.set_zlim3d(-2000, 2000)
+    scale_axes_equally(ax, 2000)
 
     interval = 1000/FPS
     #blit=False is necessary for Mac OS X (exception otherwise)
@@ -105,18 +83,16 @@ def main():
     print vsk_file_name, csv_file_name
 
     beg_frame = 1
-    end_frame = 600
-
+    end_frame = 50
 
     skeletons = list(gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame))
-    print "skeletons parsed", len(skeletons)
+    #print "skeletons parsed", len(skeletons)
     markers_anim = list(parse_markers(csv_file_name))[beg_frame - 1:end_frame]
     print "markers parsed", len(markers_anim)
 
-
-    draw_skeleton_and_markers(zip(skeletons, markers_anim), beg_frame)
+    draw_scene(skeletons, markers_anim=markers_anim, initial_frame=beg_frame, FPS=30)
 
 
 if __name__ == "__main__":
-    #python vicon_anim_parser/compare_skeleton_to_markers.py Ruslan.vsk "Ruslan Cal 03.csv"
+    #python compare_skeleton_to_markers.py Dan_first_mocap.vsk "WalkingUpSteps01.csv"
     main()

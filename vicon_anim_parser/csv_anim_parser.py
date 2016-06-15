@@ -32,7 +32,7 @@ def remove_prefix(name):
     parts = name.split(":")
     return parts[-1]
 
-def parse_anim(joint_names, csv_line_terms):
+def parse_skeleton_anim(joint_names, csv_line_terms):
     raw_skeleton = {}
     params = []
     current_joint_name = ""
@@ -50,7 +50,7 @@ def parse_anim(joint_names, csv_line_terms):
     del raw_skeleton[""]
     return raw_skeleton
 
-def parse_animations(csv_file_name, max_num_anims = float("inf")):
+def parse_skeleton_animations(csv_file_name, max_num_anims = float("inf")):
     with open(csv_file_name) as csv:
         #skip first two lines: Joints and unknown number
         read_till_joints_keyword(csv)
@@ -65,15 +65,13 @@ def parse_animations(csv_file_name, max_num_anims = float("inf")):
         #first line of actual dats
         line = next(csv)
 
-        #yield raw skeleton
-        #return parse_anim(joint_names, terms)
         num_anims = 0
         while not line.isspace() and line != "Trajectories" and num_anims < max_num_anims:
             line = line.strip()
             terms = line.split(",")
 
             #yield raw skeleton
-            yield parse_anim(joint_names, terms)
+            yield parse_skeleton_anim(joint_names, terms)
             line = next(csv)
             num_anims += 1
 
@@ -108,10 +106,8 @@ def parse_markers(csv_file_name, max_num_anims = float("inf")):
             line = next(csv)
             num_anims += 1
 
-
-
 if __name__ == "__main__":
-    result = next(parse_animations(sys.argv[1]))
+    result = next(parse_skeleton_animations(sys.argv[1]))
     print result
 
 

@@ -54,7 +54,6 @@ class Transform(object):
         (rotations around axes of rotating coordinate system).
         """
         return euler.euler2mat(x, y, z, axes="rxyz")
-        #return euler.euler2mat(x, y, z, axes="rzyx")
 
     @staticmethod
     def rotate_around_rad(axis, angle_rad):
@@ -232,8 +231,16 @@ class JointUniversal(Joint):
 class Skeleton(object):
     def __init__(self, joints, name2joint_id):
         self.joints = joints
-        self.update_global_m4x4()
+        self.global_transforms = self._create_global_transforms()
         self.name2joint_id = name2joint_id
+
+    def get_joint_id2children(self):
+        joint_id2children = [[]] * self.get_num_joints()
+        for joint in self.joints:
+            children_ids = [child.current_id for child in self.joints if child.parent_id == joint.current_id]
+            joint_id2children[joint.current_id] = children_ids
+
+        return joint_id2children
 
     def get_joints_names(self):
         return self.name2joint_id.keys()
@@ -242,14 +249,14 @@ class Skeleton(object):
         joint_id = self.name2joint_id[name]
         return self.joints[joint_id]
 
-    def get_global_m4x4_by_name(self, name):
+    def get_global_transforms_by_name(self, name):
         joint_id = self.name2joint_id[name]
-        return self.global_m4x4[joint_id]
+        return self.global_transforms[joint_id]
 
     def move_to_origin(self):
         root = self.get_root()
         root.transform.translation = np.zeros(3)
-        self.update_global_m4x4()
+        self.update_global_transforms()
 
     def get_root(self):
         return self.joints[0]
@@ -257,17 +264,18 @@ class Skeleton(object):
     def get_num_joints(self):
         return len(self.joints)
 
-
-    def update_global_m4x4(self):
+    def update_global_transforms(self):
         """
         this function must be called after each change of skeleton's joints
         """
+        self.global_transforms = self._create_global_transforms()
+
+    def _create_global_transforms(self):
         joints = self.joints
-        calc_glob_trans = self._calc_global_m4x4
-        global_m4x4 = [calc_glob_trans(joint_id) for joint_id in xrange(len(joints))]
-        self.global_m4x4 = global_m4x4
+        calc_glob_transf = self._calc_global_transform
+        return [calc_glob_transf(joint_id) for joint_id in xrange(len(joints))]
         
-    def _calc_global_m4x4(self, joint_id):
+    def _calc_global_transform(self, joint_id):
         joint = self.joints[joint_id]
         result = joint.transform.m4x4
 
@@ -275,7 +283,7 @@ class Skeleton(object):
             joint = self.joints[joint.parent_id]
             result = np.dot(joint.transform.m4x4, result)
 
-        return result
+        return Transform(result)
 
 
 

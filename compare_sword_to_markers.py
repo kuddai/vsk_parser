@@ -4,12 +4,12 @@ import numpy as np
 from math import radians, degrees
 from transforms3d import euler
 from vicon_anim_parser.character import Transform, JointFree
-from vicon_anim_parser.csv_anim_parser import parse_animations, parse_markers
+from vicon_anim_parser.csv_anim_parser import parse_skeleton_animations, parse_markers
 
 
 def gen_sword_anims(csv_file_name):
     num_empty_frames = 0
-    for i, raw_anim in enumerate(parse_animations(csv_file_name)):
+    for i, raw_anim in enumerate(parse_skeleton_animations(csv_file_name)):
         frame_id = i + 1
         try:
             coords = map(float, raw_anim["World_SwordSegment"])

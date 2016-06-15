@@ -3,8 +3,16 @@ import xml.etree.ElementTree as ET
 import numpy as np
 
 from vicon_anim_parser.character import Skeleton
-from vicon_anim_parser.skeleton_drawer import show_skeleton_structure
+from vicon_anim_parser.scene_drawer import show_skeleton_structure
 from vicon_anim_parser.jointVSKFactory import create_joint
+
+def parse_skeleton_structure(vsk_file_name):
+    tree = ET.parse(vsk_file_name)
+    root = tree.getroot()
+    skeleton_el = root.find("Skeleton")
+    skeleton_root_el = skeleton_el.find("Segment")
+    joints, name2joint_id = _parse_skeleton_from_root(skeleton_root_el)
+    return Skeleton(joints, name2joint_id)
 
 def _parse_skeleton_from_root(skeleton_root_el):
     joints = []
@@ -28,16 +36,6 @@ def _parse_skeleton_from_root(skeleton_root_el):
 
     return joints, name2joint_id
 
-
-def parse_skeleton_structure(vsk_file_name):
-    tree = ET.parse(vsk_file_name)
-    root = tree.getroot()
-    skeleton_el = root.find("Skeleton")
-    skeleton_root_el = skeleton_el.find("Segment")
-    joints, name2joint_id = _parse_skeleton_from_root(skeleton_root_el)
-    return Skeleton(joints, name2joint_id)
-
-
 def main():
     vsk_file_name = sys.argv[1]
     skeleton = parse_skeleton_structure(vsk_file_name)
@@ -60,10 +58,9 @@ def main():
     # left_shoulder = skeleton.get_joint_by_name("LeftShoulder_LeftArm")
     # left_shoulder.move(146.154,	51.1199, 118.597)
 
-    skeleton.update_global_m4x4()
+    skeleton.update_global_transforms()
     #just checking whether skeleton was parsed correctly or not
-
-    show_skeleton_structure(skeleton, show_joint_names=False)
+    show_skeleton_structure(skeleton)
 
 if __name__ == "__main__":
     # python vicon_anim_parser/src/vsk_parser.py Ruslan.vsk
