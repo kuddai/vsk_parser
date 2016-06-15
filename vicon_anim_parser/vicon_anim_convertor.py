@@ -118,10 +118,10 @@ def main():
     from copy import deepcopy
     skeleton_original = parse_skeleton_structure(vsk_file_name)
 
-    skeleton_anim = list(gen_skeleton_anims(skeleton_original, csv_file_name, 600, 1200))
+    skeleton_anim = list(gen_skeleton_anims(skeleton_original, csv_file_name, 1, 15000))
 
 
-    with open("hierarchy_bvh_test.bvh", "w") as f:
+    with open("Dan_first_mocap_1.bvh", "w") as f:
         write_bvh(skeleton_original, skeleton_anim, f)
 
 

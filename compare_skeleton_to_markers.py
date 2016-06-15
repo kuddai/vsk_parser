@@ -83,7 +83,7 @@ def main():
     print vsk_file_name, csv_file_name
 
     beg_frame = 1
-    end_frame = 50
+    end_frame = 650
 
     skeletons = list(gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame))
     #print "skeletons parsed", len(skeletons)
