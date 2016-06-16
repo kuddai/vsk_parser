@@ -47,6 +47,18 @@ class Transform(object):
         return Transform.from_euler_rad(x, y, z)
 
     @staticmethod
+    def from_euler2(x,y,z):
+        """
+        return 3x3 rotation matrix
+        """
+
+        from math import radians
+        x = radians(x)
+        y = radians(y)
+        z = radians(z)
+        return euler.euler2mat(y, x, z, axes="ryxz")
+
+    @staticmethod
     def from_euler_rad(x, y, z):
         """
         return 3x3 rotation matrix
@@ -132,6 +144,7 @@ class Joint(object):
     def move(self, *params):
         pass
 
+
 class JointBall(Joint):
 
     def move(self, *rot_euler):
@@ -142,8 +155,8 @@ class JointBall(Joint):
         assert all(isinstance(arg, Real) for arg in rot_euler), rot_euler
 
         rx, ry, rz = rot_euler
-        #rot = Transform.from_euler(rx, ry, rz)
-        rot = Transform.from_euler_rad(rx, ry, rz)
+        rot = Transform.from_euler(rx, ry, rz)
+        #rot = Transform.from_euler_rad(rx, ry, rz)
         #transf = Transform.create_transform(rot)
         self.transform.rotation = np.dot(self.transform.rotation, rot)
         #self.transform.rotation = np.dot(rot, self.transform.rotation)
@@ -159,8 +172,8 @@ class JointFree(Joint):
 
         rx, ry, rz, x, y, z = rot_euler_pos
         #do rotation
-        # rot = Transform.from_euler(rx, ry, rz)
-        rot = Transform.from_euler_rad(rx, ry, rz)
+        rot = Transform.from_euler2(rx, ry, rz)
+        #rot = Transform.from_euler_rad(rx, ry, rz)
         #translation
         trans = np.array([x, y, z])
 
@@ -187,8 +200,8 @@ class JointHinge(Joint):
         assert all(isinstance(arg, Real) for arg in angle_deg), angle_deg
         angle_deg = angle_deg[0]
 
-        #rot = Transform.rotate_around(self.axis, angle_deg)
-        rot = Transform.rotate_around_rad(self.axis, angle_deg)
+        rot = Transform.rotate_around(self.axis, angle_deg)
+        #rot = Transform.rotate_around_rad(self.axis, angle_deg)
         #one degree of freedom ->
         #np.dot(self.transform.rotation, rot) and np.dot(rot, self.transform.rotation) are the same
         self.transform.rotation = np.dot(self.transform.rotation, rot)
@@ -213,11 +226,10 @@ class JointUniversal(Joint):
         assert all(isinstance(arg, Real) for arg in angles), angles
         angle1, angle2 = angles
 
-        #rot1 = Transform.rotate_around(self.axis1, angle1)
-        rot1 = Transform.rotate_around_rad(self.axis1, angle1)
-
-        # rot2 = Transform.rotate_around(self.axis2, angle2)
-        rot2 = Transform.rotate_around_rad(self.axis2, angle2)
+        # rot1 = Transform.rotate_around_rad(self.axis1, angle1)
+        # rot2 = Transform.rotate_around_rad(self.axis2, angle2)
+        rot1 = Transform.rotate_around(self.axis1, angle1)
+        rot2 = Transform.rotate_around(self.axis2, angle2)
 
         rot = np.dot(rot1, rot2)
 

@@ -24,17 +24,29 @@ def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
 
         skeleton = deepcopy(skeleton_original)
         for joint_name in skeleton.get_joints_names():
-            parent_name, name = joint_name.split('_')
+            joint = skeleton.get_joint_by_name(joint_name)
+            parent_name, name = joint_name.split('_', 1)
+
+            current_anlges = raw_animation[name][:3]
+            #transform global -> current
+            Rgc = Transform.from_euler(*current_anlges)
+
+            if parent_name == "World":
+                #print Rgc
+                rxryrz_xyz = raw_animation[name]
+                #joint.move(*rxryrz_xyz)
+                continue
+
             parent_angles = raw_animation[parent_name][:3]
             #transform global -> parent
             Rgp = Transform.from_euler(*parent_angles)
-            current_anlges = raw_animation[parent_name][:3]
-            #transform global -> current
-            Rgc = Transform.from_euler(*current_anlges)
+
             R = np.dot(Rgc, Rgp.T)
-            joint = skeleton.get_joint_by_name(joint_name)
-            params = raw_animation[joint_name]
-            joint.move(*params)
+
+            # if name == "Spine":
+            #     print R
+
+            joint.transform.rotation = np.dot(joint.transform.rotation, R)
 
         skeleton.update_global_transforms()
 
@@ -57,17 +69,16 @@ def main():
 
     print vsk_file_name, csv_file_name
 
-    beg_frame = 4400
-    end_frame = 5000
+    beg_frame = 1
+    end_frame = 500
 
     skeletons = list(gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame))
     #print "skeletons parsed", len(skeletons)
     #markers_anim = list(parse_markers(csv_file_name))[beg_frame - 1:end_frame]
     #print "markers parsed", len(markers_anim)
-    segments_anim = list(parse_segments(csv_file_name))[beg_frame - 1:end_frame]
 
 
-    draw_scene(skeletons, markers_anim=segments_anim, initial_frame=beg_frame, FPS=30)
+    draw_scene(skeletons, initial_frame=beg_frame, FPS=30)
     #show_skeleton_structure(skeletons[1])
 
 if __name__ == "__main__":
