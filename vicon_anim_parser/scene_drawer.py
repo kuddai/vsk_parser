@@ -132,26 +132,6 @@ def draw_scene(*skeleton_animations, **options):
     plt.show()
 
 
-def draw_skeleton(ax, skeleton, show_joint_names):
-    glob_trans = skeleton.global_transforms
-    #all joints except root (it has id 0 so we need range [1:])
-    for joint in skeleton.joints[1:]:
-
-        joint_beg_id = joint.current_id
-        joint_end_id = joint.parent_id
-
-        joint_beg = glob_trans[joint_beg_id].translation
-        joint_end = glob_trans[joint_end_id].translation
-
-        x, y, z = joint_beg
-        line = zip(joint_beg, joint_end)
-
-        #here inverse because y and z axis are inversed
-        ax.plot(line[0], line[2], line[1], color="b")
-        ax.scatter(x, z, y, color="r", marker=".")
-        if show_joint_names:
-            ax.text(x, z, y, joint.name, size=10, zorder=1, color='k')
-
 def show_skeleton_structure(skeleton):
     fig = plt.figure()
     ax = fig.gca(projection='3d')

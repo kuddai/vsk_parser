@@ -2,8 +2,8 @@ import sys
 
 import numpy as np
 from math import radians, degrees
-from vicon_anim_parser.scene_drawer import draw_scene
-from vicon_anim_parser.csv_anim_parser import parse_skeleton_animations, parse_markers
+from vicon_anim_parser.scene_drawer import draw_scene, show_skeleton_structure
+from vicon_anim_parser.csv_anim_parser import parse_skeleton_animations, parse_markers, parse_segments
 from vicon_anim_parser.vsk_parser import parse_skeleton_structure
 
 def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
@@ -29,52 +29,16 @@ def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
 
         skeleton.update_global_transforms()
 
+        # rsh = skeleton.get_joint_by_name("LeftShoulder_LeftArm")
+        # print "frame id", frame_id
+        # print raw_animation["LeftShoulder_LeftArm"]
+        # print rsh.transform.m4x4
+        #
+        # print skeleton.global_transforms[rsh.current_id]
+
         # print frame_id
         # print skeleton.get_global_m4x4_by_name("Hips_Spine")
         yield skeleton
-
-
-#data -> tuples of skeleton and markers for each frame
-def draw_skeleton_and_markers(data, beg_frame=1, FPS=30):
-    from vicon_anim_parser.scene_drawer import SkeletonDrawer
-    import matplotlib.pyplot as plt
-    #this import is necessary for plt.figure().gca(projection='3d') line
-    #without it there will be exception here:
-    from mpl_toolkits.mplot3d import Axes3D
-    import matplotlib.animation as animation
-
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-
-    rest_pose_skeleton = data[0][0]
-    skeletonDrawer = SkeletonDrawer(ax, rest_pose_skeleton)
-    markersDrawer  = MarkersDrawer(ax)
-
-    def init():
-        skeleton_lines = skeletonDrawer.reinit()
-        markers_plot = markersDrawer.reinit()
-        return skeleton_lines, markers_plot
-
-    def animate(i):
-        frame_id = beg_frame + i
-        #due to first element being 0
-        skeleton, markers = data[i]
-        skeleton_lines = skeletonDrawer.draw(skeleton)
-        markers_plot   = markersDrawer.draw(markers)
-        fig.suptitle("frame_id %r" % frame_id)
-
-        return skeleton_lines, markers_plot
-
-    scale_axes_equally(ax, 2000)
-
-    interval = 1000/FPS
-    #blit=False is necessary for Mac OS X (exception otherwise)
-    #We need to keep these reference as well, otherwise it would be picked up by GB
-    anim = animation.FuncAnimation(fig, animate, frames=len(data), interval=interval, init_func=init, blit=False, repeat=False)
-
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.show()
 
 def main():
     vsk_file_name = sys.argv[1]
@@ -82,16 +46,18 @@ def main():
 
     print vsk_file_name, csv_file_name
 
-    beg_frame = 1
-    end_frame = 650
+    beg_frame = 4900
+    end_frame = 5000
 
     skeletons = list(gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame))
     #print "skeletons parsed", len(skeletons)
-    markers_anim = list(parse_markers(csv_file_name))[beg_frame - 1:end_frame]
-    print "markers parsed", len(markers_anim)
+    #markers_anim = list(parse_markers(csv_file_name))[beg_frame - 1:end_frame]
+    #print "markers parsed", len(markers_anim)
+    segments_anim = list(parse_segments(csv_file_name))[beg_frame - 1:end_frame]
 
-    draw_scene(skeletons, markers_anim=markers_anim, initial_frame=beg_frame, FPS=30)
 
+    draw_scene(skeletons, markers_anim=segments_anim, initial_frame=beg_frame, FPS=3)
+    #show_skeleton_structure(skeletons[1])
 
 if __name__ == "__main__":
     #python compare_skeleton_to_markers.py Dan_first_mocap.vsk "WalkingUpSteps01.csv"

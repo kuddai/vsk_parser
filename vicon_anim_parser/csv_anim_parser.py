@@ -18,6 +18,9 @@ def read_till_joints_keyword(f):
 def read_till_trajectories_keyword(f):
     read_till(f, "Trajectories")
 
+def read_till_segments_keyword(f):
+    read_till(f, "Segments")
+
 def str2int(word):
     """
     preserves empty strings
@@ -105,6 +108,34 @@ def parse_markers(csv_file_name, max_num_anims = float("inf")):
 
             line = next(csv)
             num_anims += 1
+
+def parse_segments(csv_file_name, max_num_anims = float("inf")):
+    with open(csv_file_name) as csv:
+        read_till_segments_keyword(csv)
+        #skip number, names, types and units lines to reach actual data
+        skip_lines(csv, 4)
+
+        line = next(csv)
+        num_anims = 0
+
+
+        while not line.isspace() and num_anims < max_num_anims:
+            line = line.strip()
+            coords = line.split(",")
+            # skip frame and subframe
+            coords = coords[2:]
+            coords = map(float, coords)
+            # assert that we have x, y, z components
+            assert len(coords) % 3 == 0
+            x = coords[3::6]
+            y = coords[4::6]
+            z = coords[5::6]
+
+            yield x, y, z
+
+            line = next(csv)
+            num_anims += 1
+
 
 if __name__ == "__main__":
     result = next(parse_skeleton_animations(sys.argv[1]))
