@@ -8,7 +8,7 @@ from vicon_anim_parser.vsk_parser import parse_skeleton_structure
 
 def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
     from copy import deepcopy
-    print "vsk parsed"
+
     skeleton_original = parse_skeleton_structure(vsk_file_name)
 
     np.set_printoptions(suppress=True, precision=4)
@@ -30,7 +30,7 @@ def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
         skeleton.update_global_transforms()
 
         # rsh = skeleton.get_joint_by_name("LeftShoulder_LeftArm")
-        # print "frame id", frame_id
+        #print "frame id", frame_id
         # print raw_animation["LeftShoulder_LeftArm"]
         # print rsh.transform.m4x4
         #
@@ -40,13 +40,15 @@ def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
         # print skeleton.get_global_m4x4_by_name("Hips_Spine")
         yield skeleton
 
+    print "vsk parsed"
+
 def main():
     vsk_file_name = sys.argv[1]
     csv_file_name = sys.argv[2]
 
     print vsk_file_name, csv_file_name
 
-    beg_frame = 4900
+    beg_frame = 4400
     end_frame = 5000
 
     skeletons = list(gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame))
@@ -56,7 +58,7 @@ def main():
     segments_anim = list(parse_segments(csv_file_name))[beg_frame - 1:end_frame]
 
 
-    draw_scene(skeletons, markers_anim=segments_anim, initial_frame=beg_frame, FPS=3)
+    draw_scene(skeletons, markers_anim=segments_anim, initial_frame=beg_frame, FPS=30)
     #show_skeleton_structure(skeletons[1])
 
 if __name__ == "__main__":

@@ -10,7 +10,8 @@ def read_till(f, keyword):
     keyword = keyword.strip()
     line = None
     while line != keyword:
-        line = next(f).strip()
+        #decode/encode to remove possible BOM character in the begining
+        line = next(f).decode("utf-8-sig").encode("utf-8").strip()
 
 def read_till_joints_keyword(f):
     read_till(f, "Joints")
@@ -54,7 +55,7 @@ def parse_skeleton_anim(joint_names, csv_line_terms):
     return raw_skeleton
 
 def parse_skeleton_animations(csv_file_name, max_num_anims = float("inf")):
-    with open(csv_file_name) as csv:
+    with open(csv_file_name, 'r+b') as csv:
         #skip first two lines: Joints and unknown number
         read_till_joints_keyword(csv)
 
@@ -135,6 +136,33 @@ def parse_segments(csv_file_name, max_num_anims = float("inf")):
 
             line = next(csv)
             num_anims += 1
+
+def parse_sements_fully(csv_file_name, max_num_anims = float("inf")):
+    with open(csv_file_name, 'r+b') as csv:
+        #skip first line with keyword
+        read_till_segments_keyword(csv)
+        #skip unknown number
+        skip_lines(csv, 1)
+
+        joint_names = next(csv).split(",")
+        #skip transform types and  deg and mm description lines
+        #this line must not be skipped if there are over formats then deg and mm
+        skip_lines(csv, 2)
+
+        #first line of actual dats
+        line = next(csv)
+
+        num_anims = 0
+        while not line.isspace() and line != "Trajectories" and num_anims < max_num_anims:
+            line = line.strip()
+            terms = line.split(",")
+
+            #yield raw skeleton
+            yield parse_skeleton_anim(joint_names, terms)
+            line = next(csv)
+            num_anims += 1
+
+        raise StopIteration()
 
 
 if __name__ == "__main__":
