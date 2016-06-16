@@ -27,8 +27,8 @@ ax.set_xlim3d(-LENGTH, LENGTH)
 ax.set_ylim3d(-LENGTH, LENGTH)
 ax.set_zlim3d(-LENGTH, LENGTH)
 
-x1, y1, z1 = map(radians, [179.98,  24.13, -157.42])#map(radians, [177.78,	26.0141,	-156.548])
-x2, y2, z2 = map(radians, [89.63,  -11.93, 78.65])
+x1, y1, z1 = map(radians, [-175.228,	-86.6589,	96.2676])#map(radians, [177.78,	26.0141,	-156.548])
+x2, y2, z2 = map(radians, [-116.372,	56.6175,	-58.7075])
 
 print radians(180)
 
@@ -37,15 +37,15 @@ stick  = np.array([LENGTH, 0, 0])
 
 axes = "rxyz"
 
-def get_angles_rad(x, y, z, axes):
-    l2a = {"x": x, "y": y, "z": z}
-    angles_rad = []
-    for letter in axes[1:]:
-        angles_rad.append(l2a[letter])
-    return angles_rad
-
-print map(degrees, get_angles_rad(x1, y1, z1, axes))
-
+# def get_angles_rad(x, y, z, axes):
+#     l2a = {"x": x, "y": y, "z": z}
+#     angles_rad = []
+#     for letter in axes[1:]:
+#         angles_rad.append(l2a[letter])
+#     return angles_rad
+#
+# print map(degrees, get_angles_rad(x1, y1, z1, axes))
+#
 # R1 = euler.euler2mat(*get_angles_rad(x1, y1, z1, axes), axes=axes)
 # R2 = euler.euler2mat(*get_angles_rad(x2, y2, z2, axes), axes=axes)
 

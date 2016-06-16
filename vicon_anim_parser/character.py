@@ -39,24 +39,39 @@ class Transform(object):
         """
         return 3x3 rotation matrix
         """
-
-        from math import radians
-        x = radians(x)
-        y = radians(y)
-        z = radians(z)
-        return Transform.from_euler_rad(x, y, z)
+        return Transform.from_euler2(x, y, z)
+        # from math import radians
+        # x = radians(x)
+        # y = radians(y)
+        # z = radians(z)
+        # return Transform.from_euler_rad(x, y, z)
 
     @staticmethod
     def from_euler2(x,y,z):
         """
+        just to check whether transforms3d library is right or not
         return 3x3 rotation matrix
         """
 
-        from math import radians
+        from math import radians, cos, sin
         x = radians(x)
         y = radians(y)
         z = radians(z)
-        return euler.euler2mat(y, x, z, axes="ryxz")
+
+
+        Rx = np.array([[ 1,       0,       0     ],
+                        [ 0,       cos(x), -sin(x)],
+                        [ 0,       sin(x),  cos(x)]])
+
+        Ry = np.array([[ cos(y),  0,       sin(y)],
+                        [ 0,       1,            0],
+                        [-sin(y),  0,       cos(y)]])
+
+        Rz = np.array([[ cos(z), -sin(z),       0],
+                        [ sin(z),  cos(z),       0],
+                        [ 0,       0,            1]])
+
+        return np.dot(Rx, np.dot(Ry, Rz))
 
     @staticmethod
     def from_euler_rad(x, y, z):
@@ -172,7 +187,7 @@ class JointFree(Joint):
 
         rx, ry, rz, x, y, z = rot_euler_pos
         #do rotation
-        rot = Transform.from_euler2(rx, ry, rz)
+        rot = Transform.from_euler(rx, ry, rz)
         #rot = Transform.from_euler_rad(rx, ry, rz)
         #translation
         trans = np.array([x, y, z])
