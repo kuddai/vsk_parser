@@ -60,6 +60,7 @@ def _build_common_all(joint, joint_el):
     translation = np.array(map(float, translation))
     transform.translation = translation
 
+    #epxonential mapping -> axis-angle pair
     angles = joint_el.get("PRE-ORIENTATION").strip().split()
 
     axis = np.array(map(float, angles))

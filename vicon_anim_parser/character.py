@@ -83,6 +83,19 @@ class Transform(object):
         return euler.euler2mat(x, y, z, axes="rxyz")
 
     @staticmethod
+    def from_axis_pair(*rot_deg):
+        from math import radians
+        rot_rad = map(radians, rot_deg)
+        axis = np.array(map(float, rot_rad))
+        magnitude = np.linalg.norm(axis)
+        if abs(magnitude) < 0.0001:
+            # magnitude = angle is too small -> rotation is just identity matrix
+            return np.eye(3)
+        else:
+            axis = axis / magnitude
+            return Transform.rotate_around_rad(axis, magnitude)
+
+    @staticmethod
     def rotate_around_rad(axis, angle_rad):
         """
         http://inside.mines.edu/fs_home/gmurray/ArbitraryAxisRotation/
@@ -170,11 +183,13 @@ class JointBall(Joint):
         assert all(isinstance(arg, Real) for arg in rot_euler), rot_euler
 
         rx, ry, rz = rot_euler
+        #rot = Transform.from_axis_pair(rx, ry, rz)
         rot = Transform.from_euler(rx, ry, rz)
         #rot = Transform.from_euler_rad(rx, ry, rz)
         #transf = Transform.create_transform(rot)
         self.transform.rotation = np.dot(self.transform.rotation, rot)
         #self.transform.rotation = np.dot(rot, self.transform.rotation)
+        #self.transform.rotation = rot
 
 class JointFree(Joint):
 
@@ -187,6 +202,8 @@ class JointFree(Joint):
 
         rx, ry, rz, x, y, z = rot_euler_pos
         #do rotation
+
+        #rot = Transform.from_axis_pair(rx, ry, rz)
         rot = Transform.from_euler(rx, ry, rz)
         #rot = Transform.from_euler_rad(rx, ry, rz)
         #translation

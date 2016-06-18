@@ -48,10 +48,10 @@ def main():
 
     print vsk_file_name, csv_file_name
 
-    # beg_frame = 1
-    # end_frame = 1000
-    beg_frame = 4500
-    end_frame = 4600
+    beg_frame = 1
+    end_frame = 500
+    # beg_frame = 4500
+    # end_frame = 4600
 
     skeletons = list(gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame))
     #print "skeletons parsed", len(skeletons)
@@ -64,6 +64,5 @@ def main():
     #show_skeleton_structure(skeletons[1])
 
 if __name__ == "__main__":
-    #
-    #  "WalkingUpSteps01.csv"
+    #python compare_skeleton_to_markers.py Dan_first_mocap.vsk WalkingUpSteps01_autointellegent_gap_fill.csv
     main()
