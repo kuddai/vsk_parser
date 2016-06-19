@@ -158,6 +158,7 @@ class Joint(object):
         self.current_id = current_id
         self.parent_id = parent_id
         self.name = ""
+        self.segment_name = ""
 
     def is_root(self):
         return self.current_id == 0
@@ -184,8 +185,8 @@ class JointBall(Joint):
 
         rx, ry, rz = rot_euler
         #rot = Transform.from_axis_pair(rx, ry, rz)
-        rot = Transform.from_euler(rx, ry, rz)
-        #rot = Transform.from_euler_rad(rx, ry, rz)
+        #rot = Transform.from_euler(rx, ry, rz)
+        rot = Transform.from_euler_rad(rx, ry, rz)
         #transf = Transform.create_transform(rot)
         self.transform.rotation = np.dot(self.transform.rotation, rot)
         #self.transform.rotation = np.dot(rot, self.transform.rotation)
@@ -204,8 +205,8 @@ class JointFree(Joint):
         #do rotation
 
         #rot = Transform.from_axis_pair(rx, ry, rz)
-        rot = Transform.from_euler(rx, ry, rz)
-        #rot = Transform.from_euler_rad(rx, ry, rz)
+        #rot = Transform.from_euler(rx, ry, rz)
+        rot = Transform.from_euler_rad(rx, ry, rz)
         #translation
         trans = np.array([x, y, z])
 
@@ -232,8 +233,8 @@ class JointHinge(Joint):
         assert all(isinstance(arg, Real) for arg in angle_deg), angle_deg
         angle_deg = angle_deg[0]
 
-        rot = Transform.rotate_around(self.axis, angle_deg)
-        #rot = Transform.rotate_around_rad(self.axis, angle_deg)
+        #rot = Transform.rotate_around(self.axis, angle_deg)
+        rot = Transform.rotate_around_rad(self.axis, angle_deg)
         #one degree of freedom ->
         #np.dot(self.transform.rotation, rot) and np.dot(rot, self.transform.rotation) are the same
         self.transform.rotation = np.dot(self.transform.rotation, rot)
@@ -258,10 +259,10 @@ class JointUniversal(Joint):
         assert all(isinstance(arg, Real) for arg in angles), angles
         angle1, angle2 = angles
 
-        # rot1 = Transform.rotate_around_rad(self.axis1, angle1)
-        # rot2 = Transform.rotate_around_rad(self.axis2, angle2)
-        rot1 = Transform.rotate_around(self.axis1, angle1)
-        rot2 = Transform.rotate_around(self.axis2, angle2)
+        rot1 = Transform.rotate_around_rad(self.axis1, angle1)
+        rot2 = Transform.rotate_around_rad(self.axis2, angle2)
+        # rot1 = Transform.rotate_around(self.axis1, angle1)
+        # rot2 = Transform.rotate_around(self.axis2, angle2)
 
         rot = np.dot(rot1, rot2)
 
@@ -276,10 +277,21 @@ class JointUniversal(Joint):
 
 
 class Skeleton(object):
-    def __init__(self, joints, name2joint_id):
+    def __init__(self, joints, name2joint_id=None, segment2joint_id=None, init_global_trans=True):
         self.joints = joints
-        self.global_transforms = self._create_global_transforms()
+
+        if init_global_trans:
+            self.global_transforms = self._create_global_transforms()
+        else:
+            self.global_transforms = None
+
+        if name2joint_id is None:
+            name2joint_id = self._create_name2joint_id()
         self.name2joint_id = name2joint_id
+
+        if segment2joint_id is None:
+            segment2joint_id = self._create_segment2joint_id()
+        self.segment2joint_id = segment2joint_id
 
     def get_joint_id2children(self):
         joint_id2children = [[]] * self.get_num_joints()
@@ -294,6 +306,10 @@ class Skeleton(object):
 
     def get_joint_by_name(self, name):
         joint_id = self.name2joint_id[name]
+        return self.joints[joint_id]
+
+    def get_joint_by_segment_name(self, name):
+        joint_id = self.segment2joint_id[name]
         return self.joints[joint_id]
 
     def get_global_transforms_by_name(self, name):
@@ -331,6 +347,33 @@ class Skeleton(object):
             result = np.dot(joint.transform.m4x4, result)
 
         return Transform(result)
+
+    def _create_segment2joint_id(self):
+        joints = self.joints
+        return {joints[joint_id].segment_name: joint_id for joint_id in xrange(len(joints))}
+
+    def _create_name2joint_id(self, joints=None):
+        joints = self.joints
+        return {joints[joint_id].name: joint_id for joint_id in xrange(len(joints))}
+
+    def rescale_joints(self, factor):
+        for joint in self.joints:
+            joint.transform.translation = joint.transform.translation * factor
+
+    def swap_axes(self, unitary_matrix):
+        assert unitary_matrix.shape == (4, 4), "wrong shape %s" % unitary_matrix.shape
+        for joint in self.joints:
+            joint.transform.m4x4 = np.dot(np.dot(unitary_matrix, joint.transform.m4x4), unitary_matrix)
+
+    def swap_Y_Z_axes(self):
+        unitary_matrix_y2z = np.array([[1,0,0,0], [0,0,1,0], [0,1,0,0], [0,0,0,1]])
+        self.swap_axes(unitary_matrix_y2z)
+
+    def clone(self):
+        from copy import deepcopy
+        joints = deepcopy(self.joints)
+        skeleton = Skeleton(joints, self.name2joint_id, self.segment2joint_id, init_global_trans=False)
+        return skeleton
 
 
 

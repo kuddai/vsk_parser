@@ -5,6 +5,7 @@ JointBall, JointFree, JointUniversal, Transform
 def create_joint(xml_el, current_id, parent_id):
     joint, joint_el = _create_specific_joint(xml_el, current_id, parent_id)
     _build_common_all(joint, joint_el)
+    _build_segment_name(joint, xml_el)
     return joint
 
 
@@ -74,3 +75,6 @@ def _build_common_all(joint, joint_el):
 
     joint.transform = transform
     joint.name = joint_el.get("NAME")
+
+def _build_segment_name(joint, xml_el):
+    joint.segment_name = xml_el.get("NAME").strip()

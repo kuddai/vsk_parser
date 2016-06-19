@@ -76,11 +76,12 @@ def write_bvh(skeleton_original, skeleton_animation, f):
         joints = skeleton.joints
         for jid in joints_visit_order:
             joint = joints[jid]
+            #bvh angles order
             angles_rad = mat2euler(joint.transform.rotation, axes='rzxy')
+            #bvh stores angles in degrees
             angles = map(degrees, angles_rad)
 
             if joint.is_root():
-                print "\t ".join(map(str, joint.transform.translation))
                 f.write("\t ".join(map(str, joint.transform.translation)))
                 f.write("\t ")
             f.write("\t ".join(map(str, angles)))
@@ -123,9 +124,6 @@ def main():
 
     with open("Dan_first_mocap_1.bvh", "w") as f:
         write_bvh(skeleton_original, skeleton_anim, f)
-
-
-
 
 
 if __name__ == "__main__":

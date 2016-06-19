@@ -10,10 +10,10 @@ G17_SCENE_LENGTH = 3500
 
 class SkeletonDrawer(object):
 
-    def __init__(self, axis, rest_pose_skeleton, color="r", linewidth=4.0, show_joint_names=False):
+    def __init__(self, axis, rest_pose_skeleton, color="r", linewidth=4.0, show_names=False):
         #minus root joint
         self.ax = axis
-        self.show_joint_names = show_joint_names
+        self.show_names = show_names
         num_bones = rest_pose_skeleton.get_num_joints() - 1
         lines = sum([axis.plot([], [], [], '-', c=color, linewidth=linewidth)  for i in xrange(num_bones)], [])
         self.lines = lines
@@ -43,7 +43,7 @@ class SkeletonDrawer(object):
             #flip 1 and 2 to change y and z axis as in our data y is vertical one
             line.set_data(data[0], data[1])
             line.set_3d_properties(data[2])
-            if self.show_joint_names:
+            if self.show_names:
                 self.ax.text(joint_beg[0], joint_beg[1], joint_beg[2], joint.name, size=10, zorder=1, color='k')
 
         return self.lines
@@ -137,7 +137,7 @@ def show_skeleton_structure(skeleton):
     ax = fig.gca(projection='3d')
 
     scale_scene(ax, G17_SCENE_LENGTH)
-    skeleton_drawer = SkeletonDrawer(ax, skeleton, show_joint_names=True)
+    skeleton_drawer = SkeletonDrawer(ax, skeleton, show_names=True)
     skeleton_drawer.draw(skeleton)
 
     plt.xlabel('x')

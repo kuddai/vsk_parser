@@ -36,8 +36,11 @@ def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
         #
         # print skeleton.global_transforms[rsh.current_id]
 
+        # hips = skeleton.get_joint_by_name("World_Hips")
         # print frame_id
-        # print skeleton.get_global_m4x4_by_name("Hips_Spine")
+        # print hips.transform
+        # print "\n"*2
+
         yield skeleton
 
     print "vsk parsed"
@@ -48,19 +51,19 @@ def main():
 
     print vsk_file_name, csv_file_name
 
-    beg_frame = 1
-    end_frame = 500
+    beg_frame = 880
+    end_frame = 900
     # beg_frame = 4500
     # end_frame = 4600
 
     skeletons = list(gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame))
     #print "skeletons parsed", len(skeletons)
-    #markers_anim = list(parse_markers(csv_file_name))[beg_frame - 1:end_frame]
-    #print "markers parsed", len(markers_anim)
+    # markers_anim = list(parse_markers(csv_file_name))[beg_frame - 1:end_frame]
+    # print "markers parsed", len(markers_anim)
     segments_anim = list(parse_segments(csv_file_name))[beg_frame - 1:end_frame]
 
 
-    draw_scene(skeletons, markers_anim=segments_anim, initial_frame=beg_frame, FPS=30)
+    draw_scene(skeletons, markers_anim=segments_anim, initial_frame=beg_frame, FPS=1)
     #show_skeleton_structure(skeletons[1])
 
 if __name__ == "__main__":
