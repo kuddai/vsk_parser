@@ -1,0 +1,6 @@
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\bin\Debug\ViconLocalRotations.exe.config
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\bin\Debug\ViconLocalRotations.exe
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\bin\Debug\ViconLocalRotations.pdb
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\bin\Debug\ViconDataStreamSDK_DotNET.dll
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\obj\Debug\ViconLocalRotations.exe
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\obj\Debug\ViconLocalRotations.pdb

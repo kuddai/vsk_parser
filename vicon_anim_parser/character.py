@@ -215,6 +215,7 @@ class JointFree(Joint):
         #self.transform * transf and transf * self.transform are the same
         transf = Transform.create_transform(rot, trans)
         self.transform = self.transform * transf
+        #self.transform = transf
 
 
 class JointHinge(Joint):
@@ -368,6 +369,21 @@ class Skeleton(object):
     def swap_Y_Z_axes(self):
         unitary_matrix_y2z = np.array([[1,0,0,0], [0,0,1,0], [0,1,0,0], [0,0,0,1]])
         self.swap_axes(unitary_matrix_y2z)
+
+    def embed_rotations(self):
+        from copy import deepcopy
+        glob_transf = self._create_global_transforms()
+        joints = deepcopy(self.joints)
+        for joint in joints:
+            if joint.is_root():
+                joint.transform.rotation = np.eye(3)
+                continue
+
+            rot = glob_transf[joint.parent_id].rotation
+            joint.transform.rotation = np.eye(3)
+            joint.transform.translation = np.dot(rot, joint.transform.translation)
+
+        self.joints = joints
 
     def clone(self):
         from copy import deepcopy

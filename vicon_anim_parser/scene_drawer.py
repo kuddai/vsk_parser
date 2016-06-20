@@ -44,7 +44,7 @@ class SkeletonDrawer(object):
             line.set_data(data[0], data[1])
             line.set_3d_properties(data[2])
             if self.show_names:
-                self.ax.text(joint_beg[0], joint_beg[1], joint_beg[2], joint.name, size=10, zorder=1, color='k')
+                self.ax.text(joint_beg[0], joint_beg[1], joint_beg[2], joint.segment_name, size=10, zorder=1, color='k')
 
         return self.lines
 

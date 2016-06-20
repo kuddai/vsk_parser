@@ -51,8 +51,8 @@ def main():
 
     print vsk_file_name, csv_file_name
 
-    beg_frame = 880
-    end_frame = 900
+    beg_frame = 1542
+    end_frame = 1700
     # beg_frame = 4500
     # end_frame = 4600
 
@@ -67,5 +67,5 @@ def main():
     #show_skeleton_structure(skeletons[1])
 
 if __name__ == "__main__":
-    #python compare_skeleton_to_markers.py Dan_first_mocap.vsk WalkingUpSteps01_autointellegent_gap_fill.csv
+    #python compare_skeleton_to_markers.py Dan_first_mocap.vsk WalkingUpSteps01_autointellegent_gap_fill_rad.csv
     main()

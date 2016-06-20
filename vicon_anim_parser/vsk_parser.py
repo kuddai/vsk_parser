@@ -1,10 +1,9 @@
 import sys
 import xml.etree.ElementTree as ET
 import numpy as np
-
-from vicon_anim_parser.character import Skeleton
 from vicon_anim_parser.scene_drawer import show_skeleton_structure
 from vicon_anim_parser.jointVSKFactory import create_joint
+from vicon_anim_parser.character import Skeleton
 
 def parse_skeleton_structure(vsk_file_name):
     tree = ET.parse(vsk_file_name)
@@ -40,7 +39,7 @@ def main():
     vsk_file_name = sys.argv[1]
     skeleton = parse_skeleton_structure(vsk_file_name)
     skeleton.move_to_origin()
-
+    skeleton.embed_rotations()
     #moving hand
     # left_arm = skeleton.get_joint_by_name("LeftArm_LeftForeArm")
     # left_arm.move(45, 45)
@@ -63,5 +62,5 @@ def main():
     show_skeleton_structure(skeleton)
 
 if __name__ == "__main__":
-    # python vicon_anim_parser/src/vsk_parser.py Ruslan.vsk
+    # python vicon_anim_parser/vsk_parser.py Ruslan.vsk
     main()

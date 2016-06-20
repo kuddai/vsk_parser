@@ -1,0 +1,7 @@
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\bin\Release\ViconLocalRotations.exe.config
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\bin\Release\ViconLocalRotations.exe
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\bin\Release\ViconLocalRotations.pdb
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\bin\Release\ViconDataStreamSDK_DotNET.dll
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\obj\Release\ViconLocalRotations.exe
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\obj\Release\ViconLocalRotations.pdb
+C:\Users\Vicon\Documents\Visual Studio 2015\Projects\ViconSDKTest\ViconLocalRotations\obj\Release\ViconLocalRotations.csprojResolveAssemblyReference.cache
