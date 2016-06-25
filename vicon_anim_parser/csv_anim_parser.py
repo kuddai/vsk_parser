@@ -119,7 +119,6 @@ def parse_segments(csv_file_name, max_num_anims = float("inf")):
         line = next(csv)
         num_anims = 0
 
-
         while not line.isspace() and num_anims < max_num_anims:
             line = line.strip()
             coords = line.split(",")
@@ -137,7 +136,25 @@ def parse_segments(csv_file_name, max_num_anims = float("inf")):
             line = next(csv)
             num_anims += 1
 
-def parse_sements_fully(csv_file_name, max_num_anims = float("inf")):
+def parse_segments_names(csv_file_name):
+    with open(csv_file_name, 'r') as csv:
+        read_till_segments_keyword(csv)
+        #skip number
+        skip_lines(csv, 1)
+        #read names
+        line = next(csv)
+        line = line.strip()
+        header = line.split(",")
+        # skip frame and subframe
+        header = header[2:]
+        header = header[:-1:6]
+        return header
+
+def remove_subjects_names(header):
+    clean = lambda x: x.split(":")[-1]
+    return map(clean, header)
+
+def parse_segments_fully(csv_file_name, max_num_anims = float("inf")):
     with open(csv_file_name, 'r+b') as csv:
         #skip first line with keyword
         read_till_segments_keyword(csv)
@@ -149,7 +166,7 @@ def parse_sements_fully(csv_file_name, max_num_anims = float("inf")):
         #this line must not be skipped if there are over formats then deg and mm
         skip_lines(csv, 2)
 
-        #first line of actual dats
+        #first line of actual data
         line = next(csv)
 
         num_anims = 0

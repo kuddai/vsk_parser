@@ -24,7 +24,7 @@ class Transform(object):
         m4x4 = np.eye(4)
         m4x4[0:3, 0:3] = rot
         m4x4[0:3, 3] = trans
-        return  m4x4
+        return m4x4
 
     @staticmethod
     def create_transform(rot, trans=np.zeros(3)):

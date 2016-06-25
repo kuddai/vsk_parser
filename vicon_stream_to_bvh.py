@@ -13,6 +13,7 @@ def main():
     from copy import deepcopy
     vsk_file_name = sys.argv[1]
     stream_file_name = sys.argv[2]
+    bvh_file_name = sys.argv[3]
 
     print vsk_file_name, stream_file_name
     skeleton_original = parse_skeleton_structure(vsk_file_name)
@@ -26,6 +27,10 @@ def main():
     for frame_id in frame_ids:
         pose = raw_anim[frame_id]
         skeleton = skeleton_TPose.clone()
+
+        if frame_id % 500 == 0:
+            print frame_id, "frames are done"
+
         for segment in pose:
             name, dofs = segment
             joint = skeleton.get_joint_by_segment_name(name)
@@ -61,11 +66,11 @@ def main():
     skeleton_TPose.rescale_joints(1/10.0)
     skeleton_TPose.swap_Y_Z_axes()
 
-    with open("Dan_first_mocap_6.bvh", "w") as f:
+    with open(bvh_file_name, "w") as f:
         write_bvh(skeleton_TPose, skeletons, f)
 
 
 if __name__ == "__main__":
     # command
-    # python vicon_stream_to_bvh.py Dan_first_mocap.vsk WalkingUpSteps01_ViconStream.txt
+    # python vicon_stream_to_bvh.py Dan_first_mocap.vsk WalkingUpSteps02_raw.txt Dan_walking_up_02.bvh
     main()

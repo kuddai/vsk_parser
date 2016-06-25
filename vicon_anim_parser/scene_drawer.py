@@ -48,6 +48,43 @@ class SkeletonDrawer(object):
 
         return self.lines
 
+class SegmentsDrawer(object):
+    def __init__(self, axis, segment_id2parent_id, color="r", linewidth=4.0):
+        def mk_plot(parent_id):
+            if parent_id == -1:
+                return axis.plot([], [], [], 'o', c=color, linewidth=linewidth)
+            else:
+                return axis.plot([], [], [], '-', c=color, linewidth=linewidth)
+
+        self.ax = axis
+        self.segment_id2parent_id = segment_id2parent_id
+
+        lines = sum([mk_plot(parent_id) for parent_id in segment_id2parent_id], [])
+        self.lines = lines
+
+    def reinit(self):
+        for line in self.lines:
+            line.set_data([], [])
+            line.set_3d_properties([])
+
+        return self.lines,
+
+    def draw(self, pose):
+        xx, yy, zz = pose
+        segment_id2parent_id = self.segment_id2parent_id
+
+        for segment_id, parent_id in enumerate(segment_id2parent_id):
+            line = self.lines[segment_id]
+
+            if parent_id == -1:
+                line.set_data(xx[segment_id], yy[segment_id])
+                line.set_3d_properties(zz[segment_id])
+                continue
+
+            line.set_data([xx[segment_id], xx[parent_id]], [yy[segment_id], yy[parent_id]])
+            line.set_3d_properties([zz[segment_id], zz[parent_id]])
+
+        return self.lines
 
 class MarkersDrawer(object):
 
@@ -65,6 +102,40 @@ class MarkersDrawer(object):
         self.markers_plot.set_data(xx, yy)
         self.markers_plot.set_3d_properties(zz)
         return self.markers_plot
+
+class MouseDrawer(object):
+
+    def __init__(self, axis, scene_length):
+        self.scene_length = scene_length
+        mouse_drawer, = axis.plot([], [], [], 'o', c="b", markersize=12)
+        mouse_tail, = axis.plot([], [], [], '-', c="b", linewidth=2)
+
+        self.mouse_last_point = mouse_drawer
+        self.mouse_tail = mouse_tail
+        self.mouse_points = []
+
+    def reinit(self):
+        self.mouse_last_point.set_data([], [])
+        self.mouse_last_point.set_3d_properties([])
+        self.mouse_tail.set_data([], [])
+        self.mouse_tail.set_3d_properties([])
+        return self.mouse_last_point, self.mouse_tail
+
+    def draw(self, mouse_data):
+        if mouse_data is None:
+            return self.mouse_last_point, self.mouse_tail
+
+        scene_length = self.scene_length
+        mouse_t, mouse_ft = mouse_data
+        new_mouse_point = (0, mouse_t*scene_length, mouse_ft*scene_length)
+        self.mouse_points.append(new_mouse_point)
+
+        mouse_track_x, mouse_track_y, mouse_track_z = zip(*self.mouse_points)
+        self.mouse_tail.set_data(mouse_track_x, mouse_track_y)
+        self.mouse_tail.set_3d_properties(mouse_track_z)
+
+        self.mouse_last_point.set_data(new_mouse_point[0], new_mouse_point[1])
+        self.mouse_last_point.set_3d_properties(new_mouse_point[2])
 
 def convert_to_list(obj):
     if hasattr(obj, "__len__"):
@@ -131,6 +202,58 @@ def draw_scene(*skeleton_animations, **options):
     plt.ylabel('y')
     plt.show()
 
+def get_segments_anim(anim_data, segment_id2parent_id, **options):
+    """
+    if initial frame is -1 then frames won't be displayed
+    """
+
+    global frame_id
+    frame_id         = options.get("initial_frame", 1)
+    scene_length     = options.get("scene_length", G17_SCENE_LENGTH)
+    FPS              = options.get("FPS", 30)
+    view_angle_horiz = options.get("view_angle_horiz", 145)
+    view_angle_vertc = options.get("view_angle_vertc", 35)
+    mouse_curve      = options.get("mouse_curve", [None] * len(anim_data))
+    hide_axes        = options.get("hide_axes", False)
+
+    assert len(mouse_curve) == len(anim_data)
+
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    ax.view_init(view_angle_vertc, view_angle_horiz)
+
+    if hide_axes:
+        ax.set_axis_off()
+
+    body_drawer = SegmentsDrawer(ax, segment_id2parent_id)
+    mouse_drawer = MouseDrawer(ax, scene_length)
+
+    scale_scene(ax, scene_length)
+    interval = 1000 / FPS # 1 second = 1000 milliseconds
+
+    def show_current_frame():
+        global frame_id
+        if frame_id <= 0:
+            return
+        fig.suptitle("frame number %r" % frame_id)
+        frame_id += 1
+        if frame_id % 500 == 0:
+            print "frame number", frame_id
+
+    def init_func():
+        return body_drawer.reinit(), mouse_drawer.reinit()
+
+    def animate(data_point):
+        show_current_frame()
+        body_pose, mouse_data = data_point
+        return body_drawer.draw(body_pose), mouse_drawer.draw(mouse_data)
+
+    #blit=False is necessary for Mac OS X (exception otherwise)
+    #We need to keep these reference as well, otherwise it would be picked up by GB
+    anim = animation.FuncAnimation(fig, animate, frames=zip(anim_data, mouse_curve), interval=interval, init_func=init_func, blit=False, repeat=False)
+    plt.xlabel('x')
+    plt.ylabel('y')
+    return anim
 
 def show_skeleton_structure(skeleton):
     fig = plt.figure()

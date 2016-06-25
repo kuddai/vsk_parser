@@ -13,6 +13,31 @@ def parse_skeleton_structure(vsk_file_name):
     joints, name2joint_id = _parse_skeleton_from_root(skeleton_root_el)
     return Skeleton(joints, name2joint_id)
 
+def parse_child2parent(vsk_file_name):
+    """
+    child to parent names.
+    If child name is not present then return None
+    """
+    from collections import defaultdict
+    child2parent = defaultdict(lambda: None)
+
+    tree = ET.parse(vsk_file_name)
+    root = tree.getroot()
+    skeleton_el = root.find("Skeleton")
+    skeleton_root_el = skeleton_el.find("Segment")
+    root_name = skeleton_root_el.get("NAME").strip()
+    child2parent[root_name] = None
+    stack = [(skeleton_root_el, root_name)]
+
+    while len(stack) > 0:
+        parent, parent_name = stack.pop()
+        for child in parent.findall("Segment"):
+            child_name = child.get("NAME").strip()
+            child2parent[child_name] = parent_name
+            stack.append((child, child_name))
+
+    return child2parent
+
 def _parse_skeleton_from_root(skeleton_root_el):
     joints = []
 

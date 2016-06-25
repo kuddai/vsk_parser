@@ -3,7 +3,7 @@ import sys
 import numpy as np
 from math import radians, degrees
 from vicon_anim_parser.scene_drawer import draw_scene, show_skeleton_structure
-from vicon_anim_parser.csv_anim_parser import parse_skeleton_animations, parse_markers, parse_sements_fully
+from vicon_anim_parser.csv_anim_parser import parse_skeleton_animations, parse_markers, parse_segments_fully
 from vicon_anim_parser.vsk_parser import parse_skeleton_structure
 from vicon_anim_parser.character import Transform, Joint
 
@@ -14,7 +14,7 @@ def gen_skeleton_anims(vsk_file_name, csv_file_name, beg_frame, end_frame):
 
     np.set_printoptions(suppress=True, precision=4)
 
-    for i, raw_animation in enumerate(parse_sements_fully(csv_file_name)):
+    for i, raw_animation in enumerate(parse_segments_fully(csv_file_name)):
         frame_id = i + 1
 
         if frame_id < beg_frame:
