@@ -75,16 +75,34 @@ class SegmentsDrawer(object):
 
         for segment_id, parent_id in enumerate(segment_id2parent_id):
             line = self.lines[segment_id]
-
             if parent_id == -1:
+                #sword and root (display elements without root as large dots)
                 line.set_data(xx[segment_id], yy[segment_id])
                 line.set_3d_properties(zz[segment_id])
-                continue
-
-            line.set_data([xx[segment_id], xx[parent_id]], [yy[segment_id], yy[parent_id]])
-            line.set_3d_properties([zz[segment_id], zz[parent_id]])
-
+            else:
+                line.set_data([xx[segment_id], xx[parent_id]], [yy[segment_id], yy[parent_id]])
+                line.set_3d_properties([zz[segment_id], zz[parent_id]])
         return self.lines
+
+    @staticmethod
+    def show_pose(pose, segment_id2parent_id, **options):
+        scene_length = options.get("scene_length", G17_SCENE_LENGTH)
+        view_angle_horiz = options.get("view_angle_horiz", 145)
+        view_angle_vertc = options.get("view_angle_vertc", 35)
+        hide_axes = options.get("hide_axes", False)
+
+        fig = plt.figure()
+        ax = fig.gca(projection='3d')
+        ax.view_init(view_angle_vertc, view_angle_horiz)
+        scale_scene(ax, scene_length)
+        if hide_axes:
+            ax.set_axis_off()
+
+        drawer = SegmentsDrawer(ax, segment_id2parent_id)
+        drawer.draw(pose)
+
+        plt.show()
+
 
 class MarkersDrawer(object):
 
@@ -221,14 +239,13 @@ def get_segments_anim(anim_data, segment_id2parent_id, **options):
     fig = plt.figure()
     ax = fig.gca(projection='3d')
     ax.view_init(view_angle_vertc, view_angle_horiz)
-
+    scale_scene(ax, scene_length)
     if hide_axes:
         ax.set_axis_off()
 
     body_drawer = SegmentsDrawer(ax, segment_id2parent_id)
     mouse_drawer = MouseDrawer(ax, scene_length)
 
-    scale_scene(ax, scene_length)
     interval = 1000 / FPS # 1 second = 1000 milliseconds
 
     def show_current_frame():

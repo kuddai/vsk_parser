@@ -76,32 +76,39 @@ def parse_mouse_data(mouseDataFileName):
     return mouseData
 
 def get_segment_anim_data(vsk_file_name, csv_file_name):
+    """
+    :return: segment_id2parent_id, segments_names, anim_data
+    """
+    #there are 2 possible segments without parent: root and sword -> displayed as mere dots
     from vicon_anim_parser.vsk_parser import parse_child2parent
     from vicon_anim_parser.csv_anim_parser import parse_segments_names, remove_subjects_names, parse_segments
 
-    header = parse_segments_names(csv_file_name)
-    header = remove_subjects_names(header)
+    segments_names = parse_segments_names(csv_file_name)
+    segments_names = remove_subjects_names(segments_names)
     # remove sword segment
     # header = header[:-1]
 
     child2parent = parse_child2parent(vsk_file_name)
+    segment_name2segment_id = {segment_name: segment_id for segment_id, segment_name in enumerate(segments_names)}
+    segment_id2parent_id = [None] * len(segments_names)
 
-    segment_name2segment_id = {segment_name: segment_id for segment_id, segment_name in enumerate(header)}
-
-    segment_id2parent_id = [None] * len(header)
-    for segment_id in xrange(len(header)):
-        segment_name = header[segment_id]
+    for segment_id in xrange(len(segments_names)):
+        segment_name = segments_names[segment_id]
         parent_name = child2parent[segment_name]
         parent_id = -1 if parent_name is None else segment_name2segment_id[parent_name]
         segment_id2parent_id[segment_id] = parent_id
 
     anim_data = list(parse_segments(csv_file_name))
+    return segment_id2parent_id, segments_names, anim_data
 
-    return segment_id2parent_id, header, anim_data
-
-def convert_anim_for_learning(anim):
+def convert_segment_anim_to_matrix(anim_data):
+    """
+    change segment animation into matrix form suitable for learning
+    first index - frames
+    second index - pose vector xx,yy,zz
+    """
     converted = []
-    for pose in anim:
+    for pose in anim_data:
         xx, yy, zz = pose
         pose_vector = xx + yy + zz
         converted.append(pose_vector)
@@ -109,11 +116,11 @@ def convert_anim_for_learning(anim):
     converted = converted.astype('float32')
     return converted
 
-def convert_pose_row_to_markers(pose_vector):
-    length = len(pose_vector)
-    assert length % 3 == 0, "pose row is wrong, can divide equally one 3 parts. length %s" % length
+def convert_pose_vector_to_segments(pose_vector):
+    num_joints_x3 = len(pose_vector)
+    assert num_joints_x3 % 3 == 0, "pose row is wrong, can't divide equally one 3 parts. length %s" % num_joints_x3
 
-    coord_length = length / 3
+    coord_length = num_joints_x3 / 3
     xx = pose_vector[0 :   coord_length]
     yy = pose_vector[coord_length : 2 * coord_length]
     zz = pose_vector[2 * coord_length : 3 * coord_length]
@@ -121,8 +128,11 @@ def convert_pose_row_to_markers(pose_vector):
     return xx, yy, zz
 
 def convert_anim_data_to_interp_knots(anim_data):
-    length = len(anim_data)
-    return [float(i) / length for i in xrange(length)]
+    """
+    each knot is between 0.0 and 1.0
+    """
+    num_frames = len(anim_data)
+    return [float(frame_index) / num_frames for frame_index in xrange(num_frames)]
 
 def interp_mouse_data(interp_knots, mouse_curve):
     import numpy as np
@@ -131,10 +141,10 @@ def interp_mouse_data(interp_knots, mouse_curve):
     time_interval = time_end - time_beg
 
     tt = map(lambda r: (r[MTS] - time_beg) / time_interval, mouse_curve)
-    xx = map(lambda r: r[MPX], mouse_curve)
-    yy = map(lambda r: r[MPY], mouse_curve)
-    vx = map(lambda r: r[MVX], mouse_curve)
-    vy = map(lambda r: r[MVY], mouse_curve)
+    xx = map(lambda r:  r[MPX], mouse_curve)
+    yy = map(lambda r:  r[MPY], mouse_curve)
+    vx = map(lambda r:  r[MVX], mouse_curve)
+    vy = map(lambda r:  r[MVY], mouse_curve)
 
     xx_new = np.interp(interp_knots, tt, xx)
     yy_new = np.interp(interp_knots, tt, yy)
@@ -144,6 +154,11 @@ def interp_mouse_data(interp_knots, mouse_curve):
     return xx_new, yy_new, vx_new, vy_new
 
 def couple_data(anim_data, mouse_curve):
+    """
+    :param anim_data: animation in segment format
+    :param mouse_curve: raw mouse curve
+    :return: mouse curve aligned with anim_data in tuple (xx, yy, vx, vy)
+    """
     interp_knots = convert_anim_data_to_interp_knots(anim_data)
     return interp_mouse_data(interp_knots, mouse_curve)
 
@@ -169,9 +184,13 @@ def plot_styled(xx, fxx, label_x="argumnet", label_fx="function", title=""):
     plt.show()
 
 def save_coupled_horizontal_data(name, mouse_curve, anim_data):
+    """
+    save only horizontal velocity and position
+    :param anim_data: animation segments format
+    """
     xx, yy, vx, vy = couple_data(anim_data, mouse_curve)
     mouse_input = np.array(zip(xx, vx)).astype('float32')
-    anim_output = convert_anim_for_learning(anim_data)
+    anim_output = convert_segment_anim_to_matrix(anim_data)
 
     print name, "input  shape", mouse_input.shape
     print name, "output shape", anim_output.shape
