@@ -10,6 +10,7 @@ from vicon_anim_parser.character import Transform, Skeleton
 import numpy as np
 
 def main():
+    OUTPUT_MSG_FREQ = 500
     from copy import deepcopy
     vsk_file_name = sys.argv[1]
     stream_file_name = sys.argv[2]
@@ -28,7 +29,7 @@ def main():
         pose = raw_anim[frame_id]
         skeleton = skeleton_TPose.clone()
 
-        if frame_id % 500 == 0:
+        if frame_id % OUTPUT_MSG_FREQ == 0:
             print frame_id, "frames are done"
 
         for segment in pose:
@@ -40,7 +41,6 @@ def main():
                 loc_trans = dofs[3:]
                 joint.transform.translation = np.array(loc_trans)
 
-            #orig_rot = skeleton_original.global_transforms[joint.parent_id].rotation
             orig_rot = skeleton_original.get_joint_by_segment_name(name).transform.rotation
             if joint.is_root():
                 prev_rot = np.eye(3)
@@ -48,14 +48,8 @@ def main():
                 prev_rot = skeleton_original.global_transforms[joint.parent_id].rotation
             comp_rot = np.dot(prev_rot, orig_rot).T
             joint.transform.rotation = np.dot(prev_rot, np.dot(loc_rot, comp_rot))
-            #joint.transform.rotation = loc_rot#np.dot(joint.transform.rotation, loc_rot)
-            # trans_TPose = skeleton_TPose.get_joint_by_segment_name(name).transform.translation
-            # joint.transform.translation = trans_TPose
-
-
 
         #no need for global update as we won't draw animation here
-        #skeleton.update_global_transforms()
         skeleton.rescale_joints(1/10.0)
         skeleton.swap_Y_Z_axes()
         skeletons.append(skeleton)

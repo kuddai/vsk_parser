@@ -1,176 +1,176 @@
-16:16:09: Creating resource group General
-16:16:09: Creating resource group Internal
-16:16:09: Creating resource group Autodetect
-16:16:09: SceneManagerFactory for type 'DefaultSceneManager' registered.
-16:16:09: Registering ResourceManager for type Material
-16:16:09: Registering ResourceManager for type Mesh
-16:16:09: Registering ResourceManager for type Skeleton
-16:16:09: MovableObjectFactory for type 'ParticleSystem' registered.
-16:16:09: OverlayElementFactory for type Panel registered.
-16:16:09: OverlayElementFactory for type BorderPanel registered.
-16:16:09: OverlayElementFactory for type TextArea registered.
-16:16:09: Registering ResourceManager for type Font
-16:16:09: ArchiveFactory for archive type FileSystem registered.
-16:16:09: ArchiveFactory for archive type Zip registered.
-16:16:09: DDS codec registering
-16:16:09: FreeImage version: 3.13.1
-16:16:09: This program uses FreeImage, a free, open source image library supporting all common bitmap formats. See http://freeimage.sourceforge.net for details
-16:16:09: Supported formats: bmp,ico,jpg,jif,jpeg,jpe,jng,koa,iff,lbm,mng,pbm,pbm,pcd,pcx,pgm,pgm,png,ppm,ppm,ras,tga,targa,tif,tiff,wap,wbmp,wbm,psd,cut,xbm,xpm,gif,hdr,g3,sgi,exr,j2k,j2c,jp2,pfm,pct,pict,pic,bay,bmq,cr2,crw,cs1,dc2,dcr,dng,erf,fff,hdr,k25,kdc,mdc,mos,mrw,nef,orf,pef,pxn,raf,raw,rdc,sr2,srf,arw,3fr,cine,ia,kc2,mef,nrw,qtk,rw2,sti,drf,dsc,ptx,cap,iiq,rwz
-16:16:09: Registering ResourceManager for type HighLevelGpuProgram
-16:16:09: Registering ResourceManager for type Compositor
-16:16:09: MovableObjectFactory for type 'Entity' registered.
-16:16:09: MovableObjectFactory for type 'Light' registered.
-16:16:09: MovableObjectFactory for type 'BillboardSet' registered.
-16:16:09: MovableObjectFactory for type 'ManualObject' registered.
-16:16:09: MovableObjectFactory for type 'BillboardChain' registered.
-16:16:09: MovableObjectFactory for type 'RibbonTrail' registered.
-16:16:09: *-*-* OGRE Initialising
-16:16:09: *-*-* Version 1.7.2 (Cthugha)
-16:16:09: Loading library RenderSystem_Direct3D9.dll
-16:16:09: Installing plugin: D3D9 RenderSystem
-16:16:09: D3D9 : Direct3D9 Rendering Subsystem created.
-16:16:09: D3D9: Driver Detection Starts
-16:16:09: D3D9: Driver Detection Ends
-16:16:09: Plugin successfully installed
-16:16:09: D3D9 : RenderSystem Option: Video Mode = 100x30
-16:16:09: D3D9 : RenderSystem Option: Full Screen = No
-16:16:09: D3D9 : RenderSystem Option: Floating-point mode = Consistent
-16:16:09: CPU Identifier & Features
-16:16:09: -------------------------
-16:16:09:  *   CPU ID: GenuineIntel: Intel(R) Xeon(R) CPU E5-1620 v3 @ 3.50GHz
-16:16:09:  *      SSE: yes
-16:16:09:  *     SSE2: yes
-16:16:09:  *     SSE3: yes
-16:16:09:  *      MMX: yes
-16:16:09:  *   MMXEXT: yes
-16:16:09:  *    3DNOW: no
-16:16:09:  * 3DNOWEXT: no
-16:16:09:  *     CMOV: yes
-16:16:09:  *      TSC: yes
-16:16:09:  *      FPU: yes
-16:16:09:  *      PRO: yes
-16:16:09:  *       HT: no
-16:16:09: -------------------------
-16:16:09: D3D9 : Subsystem Initialising
-16:16:09: Registering ResourceManager for type Texture
-16:16:09: Registering ResourceManager for type GpuProgram
-16:16:09: ***************************************
-16:16:09: *** D3D9 : Subsystem Initialised OK ***
-16:16:09: ***************************************
-16:16:09: D3D9RenderSystem::_createRenderWindow "QOgreWidget_RenderWindow", 1920x944 windowed  miscParams: parentWindowHandle=199006 
-16:16:09: D3D9 : Created D3D9 Rendering Window 'QOgreWidget_RenderWindow' : 1920x944, 32bpp
-16:16:09: D3D9 : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem.
-16:16:09: D3D9: Vertex texture format supported - PF_A8R8G8B8
-16:16:09: D3D9: Vertex texture format supported - PF_B8G8R8A8
-16:16:09: D3D9: Vertex texture format supported - PF_FLOAT16_RGB
-16:16:09: D3D9: Vertex texture format supported - PF_FLOAT16_RGBA
-16:16:09: D3D9: Vertex texture format supported - PF_FLOAT32_RGB
-16:16:09: D3D9: Vertex texture format supported - PF_FLOAT32_RGBA
-16:16:09: D3D9: Vertex texture format supported - PF_R8G8B8A8
-16:16:09: D3D9: Vertex texture format supported - PF_DEPTH
-16:16:09: D3D9: Vertex texture format supported - PF_FLOAT16_R
-16:16:09: D3D9: Vertex texture format supported - PF_FLOAT32_R
-16:16:09: D3D9: Vertex texture format supported - PF_FLOAT16_GR
-16:16:09: D3D9: Vertex texture format supported - PF_FLOAT32_GR
-16:16:09: D3D9: Vertex texture format supported - PF_PVRTC_RGB2
-16:16:09: D3D9: Vertex texture format supported - PF_PVRTC_RGBA2
-16:16:09: D3D9: Vertex texture format supported - PF_PVRTC_RGB4
-16:16:09: D3D9: Vertex texture format supported - PF_PVRTC_RGBA4
-16:16:09: RenderSystem capabilities
-16:16:09: -------------------------
-16:16:09: RenderSystem Name: Direct3D9 Rendering Subsystem
-16:16:09: GPU Vendor: nvidia
-16:16:09: Device Name: Monitor-1-NVIDIA Quadro K620
-16:16:09: Driver Version: 10.18.13.5413
-16:16:09:  * Fixed function pipeline: yes
-16:16:09:  * Hardware generation of mipmaps: yes
-16:16:09:  * Texture blending: yes
-16:16:09:  * Anisotropic texture filtering: yes
-16:16:09:  * Dot product texture operation: yes
-16:16:09:  * Cube mapping: yes
-16:16:09:  * Hardware stencil buffer: yes
-16:16:09:    - Stencil depth: 8
-16:16:09:    - Two sided stencil support: yes
-16:16:09:    - Wrap stencil values: yes
-16:16:09:  * Hardware vertex / index buffers: yes
-16:16:09:  * Vertex programs: yes
-16:16:09:  * Number of floating-point constants for vertex programs: 256
-16:16:09:  * Number of integer constants for vertex programs: 16
-16:16:09:  * Number of boolean constants for vertex programs: 16
-16:16:09:  * Fragment programs: yes
-16:16:09:  * Number of floating-point constants for fragment programs: 224
-16:16:09:  * Number of integer constants for fragment programs: 16
-16:16:09:  * Number of boolean constants for fragment programs: 16
-16:16:09:  * Geometry programs: no
-16:16:09:  * Number of floating-point constants for geometry programs: 0
-16:16:09:  * Number of integer constants for geometry programs: 0
-16:16:09:  * Number of boolean constants for geometry programs: 0
-16:16:09:  * Supported Shader Profiles: hlsl ps_1_1 ps_1_2 ps_1_3 ps_1_4 ps_2_0 ps_2_a ps_2_b ps_2_x ps_3_0 vs_1_1 vs_2_0 vs_2_a vs_2_x vs_3_0
-16:16:09:  * Texture Compression: yes
-16:16:09:    - DXT: yes
-16:16:09:    - VTC: no
-16:16:09:    - PVRTC: no
-16:16:09:  * Scissor Rectangle: yes
-16:16:09:  * Hardware Occlusion Query: yes
-16:16:09:  * User clip planes: yes
-16:16:09:  * VET_UBYTE4 vertex element type: yes
-16:16:09:  * Infinite far plane projection: yes
-16:16:09:  * Hardware render-to-texture: yes
-16:16:09:  * Floating point textures: yes
-16:16:09:  * Non-power-of-two textures: yes
-16:16:09:  * Volume textures: yes
-16:16:09:  * Multiple Render Targets: 4
-16:16:09:    - With different bit depths: yes
-16:16:09:  * Point Sprites: yes
-16:16:09:  * Extended point parameters: yes
-16:16:09:  * Max Point Size: 10
-16:16:09:  * Vertex texture fetch: yes
-16:16:09:  * Number of world matrices: 0
-16:16:09:  * Number of texture units: 8
-16:16:09:  * Stencil buffer depth: 8
-16:16:09:  * Number of vertex blend matrices: 0
-16:16:09:    - Max vertex textures: 4
-16:16:09:    - Vertex textures shared: no
-16:16:09:  * Render to Vertex Buffer : no
-16:16:09:  * DirectX per stage constants: yes
-16:16:09: DefaultWorkQueue('Root') initialising on thread main.
-16:16:09: Particle Renderer Type 'billboard' registered
-16:16:09: Creating resource group dim
-16:16:09: Added resource location 'C:\Program Files (x86)\Development in Motion\BVHViewer 1.1\bin\release/../../resources/3d/env' of type 'FileSystem' to resource group 'dim'
-16:16:09: Initialising resource group dim
-16:16:09: Parsing scripts for resource group dim
-16:16:09: Parsing script dim.material
-16:16:09: Finished parsing scripts for resource group dim
-16:16:09: Creating resource group stickskelmodels
-16:16:09: Added resource location 'C:\Program Files (x86)\Development in Motion\BVHViewer 1.1\bin\release/../../resources/3d/stickskel/' of type 'FileSystem' to resource group 'stickskelmodels'
-16:16:09: Initialising resource group stickskelmodels
-16:16:09: Parsing scripts for resource group stickskelmodels
-16:16:09: Parsing script stickskel.material
-16:16:09: Finished parsing scripts for resource group stickskelmodels
-16:16:09: Texture: floor.jpg: Loading 1 faces(PF_R8G8B8,512x512x1) with  hardware generated mipmaps from Image. Internal format is PF_X8R8G8B8,512x512x1.
-16:16:11: Mesh: Loading sphere.mesh.
-16:16:11: Texture: whitestripe.png: Loading 1 faces(PF_A8R8G8B8,600x600x1) with 9 generated mipmaps from Image. Internal format is PF_A8R8G8B8,600x600x1.
-16:16:11: D3D9 Device 0x[010591A0] entered lost state
-16:16:11: D3D9 : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem.
-16:16:11: !!! Direct3D Device successfully restored.
-16:16:11: D3D9 device: 0x[010591A0] was reset
-16:25:18: Removed resource location C:\Program Files (x86)\Development in Motion\BVHViewer 1.1\bin\release/../../resources/3d/stickskel/
-16:25:18: Destroying resource group stickskelmodels
-16:25:18: Unloading resource group stickskelmodels
-16:25:18: Finished unloading resource group stickskelmodels
-16:25:18: DefaultWorkQueue('Root') shutting down on thread main.
-16:25:18: *-*-* OGRE Shutdown
-16:25:18: *-*-* OGRE Shutdown
-16:25:18: Unregistering ResourceManager for type Compositor
-16:25:18: Unregistering ResourceManager for type Font
-16:25:18: Unregistering ResourceManager for type Skeleton
-16:25:18: Unregistering ResourceManager for type Mesh
-16:25:18: Unregistering ResourceManager for type HighLevelGpuProgram
-16:25:18: Uninstalling plugin: D3D9 RenderSystem
-16:25:18: D3D9 : Shutting down cleanly.
-16:25:18: Unregistering ResourceManager for type Texture
-16:25:18: Unregistering ResourceManager for type GpuProgram
-16:25:18: D3D9 : Direct3D9 Rendering Subsystem destroyed.
-16:25:18: Plugin successfully uninstalled
-16:25:18: Unloading library RenderSystem_Direct3D9.dll
-16:25:18: Unregistering ResourceManager for type Material
+17:44:59: Creating resource group General
+17:44:59: Creating resource group Internal
+17:44:59: Creating resource group Autodetect
+17:44:59: SceneManagerFactory for type 'DefaultSceneManager' registered.
+17:44:59: Registering ResourceManager for type Material
+17:44:59: Registering ResourceManager for type Mesh
+17:44:59: Registering ResourceManager for type Skeleton
+17:44:59: MovableObjectFactory for type 'ParticleSystem' registered.
+17:44:59: OverlayElementFactory for type Panel registered.
+17:44:59: OverlayElementFactory for type BorderPanel registered.
+17:44:59: OverlayElementFactory for type TextArea registered.
+17:44:59: Registering ResourceManager for type Font
+17:44:59: ArchiveFactory for archive type FileSystem registered.
+17:44:59: ArchiveFactory for archive type Zip registered.
+17:44:59: DDS codec registering
+17:44:59: FreeImage version: 3.13.1
+17:44:59: This program uses FreeImage, a free, open source image library supporting all common bitmap formats. See http://freeimage.sourceforge.net for details
+17:44:59: Supported formats: bmp,ico,jpg,jif,jpeg,jpe,jng,koa,iff,lbm,mng,pbm,pbm,pcd,pcx,pgm,pgm,png,ppm,ppm,ras,tga,targa,tif,tiff,wap,wbmp,wbm,psd,cut,xbm,xpm,gif,hdr,g3,sgi,exr,j2k,j2c,jp2,pfm,pct,pict,pic,bay,bmq,cr2,crw,cs1,dc2,dcr,dng,erf,fff,hdr,k25,kdc,mdc,mos,mrw,nef,orf,pef,pxn,raf,raw,rdc,sr2,srf,arw,3fr,cine,ia,kc2,mef,nrw,qtk,rw2,sti,drf,dsc,ptx,cap,iiq,rwz
+17:44:59: Registering ResourceManager for type HighLevelGpuProgram
+17:44:59: Registering ResourceManager for type Compositor
+17:44:59: MovableObjectFactory for type 'Entity' registered.
+17:44:59: MovableObjectFactory for type 'Light' registered.
+17:44:59: MovableObjectFactory for type 'BillboardSet' registered.
+17:44:59: MovableObjectFactory for type 'ManualObject' registered.
+17:44:59: MovableObjectFactory for type 'BillboardChain' registered.
+17:44:59: MovableObjectFactory for type 'RibbonTrail' registered.
+17:44:59: *-*-* OGRE Initialising
+17:44:59: *-*-* Version 1.7.2 (Cthugha)
+17:44:59: Loading library RenderSystem_Direct3D9.dll
+17:44:59: Installing plugin: D3D9 RenderSystem
+17:44:59: D3D9 : Direct3D9 Rendering Subsystem created.
+17:44:59: D3D9: Driver Detection Starts
+17:44:59: D3D9: Driver Detection Ends
+17:44:59: Plugin successfully installed
+17:44:59: D3D9 : RenderSystem Option: Video Mode = 100x30
+17:44:59: D3D9 : RenderSystem Option: Full Screen = No
+17:44:59: D3D9 : RenderSystem Option: Floating-point mode = Consistent
+17:44:59: CPU Identifier & Features
+17:44:59: -------------------------
+17:44:59:  *   CPU ID: GenuineIntel: Intel(R) Xeon(R) CPU E5-1620 v3 @ 3.50GHz
+17:44:59:  *      SSE: yes
+17:44:59:  *     SSE2: yes
+17:44:59:  *     SSE3: yes
+17:44:59:  *      MMX: yes
+17:44:59:  *   MMXEXT: yes
+17:44:59:  *    3DNOW: no
+17:44:59:  * 3DNOWEXT: no
+17:44:59:  *     CMOV: yes
+17:44:59:  *      TSC: yes
+17:44:59:  *      FPU: yes
+17:44:59:  *      PRO: yes
+17:44:59:  *       HT: no
+17:44:59: -------------------------
+17:44:59: D3D9 : Subsystem Initialising
+17:44:59: Registering ResourceManager for type Texture
+17:44:59: Registering ResourceManager for type GpuProgram
+17:44:59: ***************************************
+17:44:59: *** D3D9 : Subsystem Initialised OK ***
+17:44:59: ***************************************
+17:44:59: D3D9RenderSystem::_createRenderWindow "QOgreWidget_RenderWindow", 1920x944 windowed  miscParams: parentWindowHandle=525460 
+17:44:59: D3D9 : Created D3D9 Rendering Window 'QOgreWidget_RenderWindow' : 1920x944, 32bpp
+17:44:59: D3D9 : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem.
+17:44:59: D3D9: Vertex texture format supported - PF_A8R8G8B8
+17:44:59: D3D9: Vertex texture format supported - PF_B8G8R8A8
+17:44:59: D3D9: Vertex texture format supported - PF_FLOAT16_RGB
+17:44:59: D3D9: Vertex texture format supported - PF_FLOAT16_RGBA
+17:44:59: D3D9: Vertex texture format supported - PF_FLOAT32_RGB
+17:44:59: D3D9: Vertex texture format supported - PF_FLOAT32_RGBA
+17:44:59: D3D9: Vertex texture format supported - PF_R8G8B8A8
+17:44:59: D3D9: Vertex texture format supported - PF_DEPTH
+17:44:59: D3D9: Vertex texture format supported - PF_FLOAT16_R
+17:44:59: D3D9: Vertex texture format supported - PF_FLOAT32_R
+17:44:59: D3D9: Vertex texture format supported - PF_FLOAT16_GR
+17:44:59: D3D9: Vertex texture format supported - PF_FLOAT32_GR
+17:44:59: D3D9: Vertex texture format supported - PF_PVRTC_RGB2
+17:44:59: D3D9: Vertex texture format supported - PF_PVRTC_RGBA2
+17:44:59: D3D9: Vertex texture format supported - PF_PVRTC_RGB4
+17:44:59: D3D9: Vertex texture format supported - PF_PVRTC_RGBA4
+17:44:59: RenderSystem capabilities
+17:44:59: -------------------------
+17:44:59: RenderSystem Name: Direct3D9 Rendering Subsystem
+17:44:59: GPU Vendor: nvidia
+17:44:59: Device Name: Monitor-1-NVIDIA Quadro K620
+17:44:59: Driver Version: 10.18.13.5413
+17:44:59:  * Fixed function pipeline: yes
+17:44:59:  * Hardware generation of mipmaps: yes
+17:44:59:  * Texture blending: yes
+17:44:59:  * Anisotropic texture filtering: yes
+17:44:59:  * Dot product texture operation: yes
+17:44:59:  * Cube mapping: yes
+17:44:59:  * Hardware stencil buffer: yes
+17:44:59:    - Stencil depth: 8
+17:44:59:    - Two sided stencil support: yes
+17:44:59:    - Wrap stencil values: yes
+17:44:59:  * Hardware vertex / index buffers: yes
+17:44:59:  * Vertex programs: yes
+17:44:59:  * Number of floating-point constants for vertex programs: 256
+17:44:59:  * Number of integer constants for vertex programs: 16
+17:44:59:  * Number of boolean constants for vertex programs: 16
+17:44:59:  * Fragment programs: yes
+17:44:59:  * Number of floating-point constants for fragment programs: 224
+17:44:59:  * Number of integer constants for fragment programs: 16
+17:44:59:  * Number of boolean constants for fragment programs: 16
+17:44:59:  * Geometry programs: no
+17:44:59:  * Number of floating-point constants for geometry programs: 0
+17:44:59:  * Number of integer constants for geometry programs: 0
+17:44:59:  * Number of boolean constants for geometry programs: 0
+17:44:59:  * Supported Shader Profiles: hlsl ps_1_1 ps_1_2 ps_1_3 ps_1_4 ps_2_0 ps_2_a ps_2_b ps_2_x ps_3_0 vs_1_1 vs_2_0 vs_2_a vs_2_x vs_3_0
+17:44:59:  * Texture Compression: yes
+17:44:59:    - DXT: yes
+17:44:59:    - VTC: no
+17:44:59:    - PVRTC: no
+17:44:59:  * Scissor Rectangle: yes
+17:44:59:  * Hardware Occlusion Query: yes
+17:44:59:  * User clip planes: yes
+17:44:59:  * VET_UBYTE4 vertex element type: yes
+17:44:59:  * Infinite far plane projection: yes
+17:44:59:  * Hardware render-to-texture: yes
+17:44:59:  * Floating point textures: yes
+17:44:59:  * Non-power-of-two textures: yes
+17:44:59:  * Volume textures: yes
+17:44:59:  * Multiple Render Targets: 4
+17:44:59:    - With different bit depths: yes
+17:44:59:  * Point Sprites: yes
+17:44:59:  * Extended point parameters: yes
+17:44:59:  * Max Point Size: 10
+17:44:59:  * Vertex texture fetch: yes
+17:44:59:  * Number of world matrices: 0
+17:44:59:  * Number of texture units: 8
+17:44:59:  * Stencil buffer depth: 8
+17:44:59:  * Number of vertex blend matrices: 0
+17:44:59:    - Max vertex textures: 4
+17:44:59:    - Vertex textures shared: no
+17:44:59:  * Render to Vertex Buffer : no
+17:44:59:  * DirectX per stage constants: yes
+17:44:59: DefaultWorkQueue('Root') initialising on thread main.
+17:44:59: Particle Renderer Type 'billboard' registered
+17:44:59: Creating resource group dim
+17:44:59: Added resource location 'C:\Program Files (x86)\Development in Motion\BVHViewer 1.1\bin\release/../../resources/3d/env' of type 'FileSystem' to resource group 'dim'
+17:44:59: Initialising resource group dim
+17:44:59: Parsing scripts for resource group dim
+17:44:59: Parsing script dim.material
+17:44:59: Finished parsing scripts for resource group dim
+17:44:59: Creating resource group stickskelmodels
+17:44:59: Added resource location 'C:\Program Files (x86)\Development in Motion\BVHViewer 1.1\bin\release/../../resources/3d/stickskel/' of type 'FileSystem' to resource group 'stickskelmodels'
+17:44:59: Initialising resource group stickskelmodels
+17:44:59: Parsing scripts for resource group stickskelmodels
+17:44:59: Parsing script stickskel.material
+17:44:59: Finished parsing scripts for resource group stickskelmodels
+17:44:59: Texture: floor.jpg: Loading 1 faces(PF_R8G8B8,512x512x1) with  hardware generated mipmaps from Image. Internal format is PF_X8R8G8B8,512x512x1.
+17:45:01: Mesh: Loading sphere.mesh.
+17:45:01: Texture: whitestripe.png: Loading 1 faces(PF_A8R8G8B8,600x600x1) with 9 generated mipmaps from Image. Internal format is PF_A8R8G8B8,600x600x1.
+17:45:01: D3D9 Device 0x[079A91A0] entered lost state
+17:45:01: D3D9 : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem.
+17:45:01: !!! Direct3D Device successfully restored.
+17:45:01: D3D9 device: 0x[079A91A0] was reset
+17:47:43: Removed resource location C:\Program Files (x86)\Development in Motion\BVHViewer 1.1\bin\release/../../resources/3d/stickskel/
+17:47:43: Destroying resource group stickskelmodels
+17:47:43: Unloading resource group stickskelmodels
+17:47:43: Finished unloading resource group stickskelmodels
+17:47:43: DefaultWorkQueue('Root') shutting down on thread main.
+17:47:43: *-*-* OGRE Shutdown
+17:47:43: *-*-* OGRE Shutdown
+17:47:43: Unregistering ResourceManager for type Compositor
+17:47:43: Unregistering ResourceManager for type Font
+17:47:43: Unregistering ResourceManager for type Skeleton
+17:47:43: Unregistering ResourceManager for type Mesh
+17:47:43: Unregistering ResourceManager for type HighLevelGpuProgram
+17:47:43: Uninstalling plugin: D3D9 RenderSystem
+17:47:43: D3D9 : Shutting down cleanly.
+17:47:43: Unregistering ResourceManager for type Texture
+17:47:43: Unregistering ResourceManager for type GpuProgram
+17:47:43: D3D9 : Direct3D9 Rendering Subsystem destroyed.
+17:47:43: Plugin successfully uninstalled
+17:47:43: Unloading library RenderSystem_Direct3D9.dll
+17:47:43: Unregistering ResourceManager for type Material
